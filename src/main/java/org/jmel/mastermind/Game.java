@@ -1,18 +1,15 @@
 package org.jmel.mastermind;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class Game {
-
     private final Code secretCode;
     private final int maxAttempts;
     private final List<Code> guessHistory;
 
     public Game() {
         secretCode = new Code(generateSecretCode());
-        maxAttempts = 2;
+        maxAttempts = 10;
         guessHistory = new ArrayList<>();
     }
 
@@ -31,8 +28,29 @@ public class Game {
     }
 
     private Feedback computeFeedback(Code secretCode, Code guess) {
-        // TODO implement algorithm here
-        return new Feedback(0, 0);
+        int wellPlaced = 0;
+        Map<Integer, Integer> secretFreq = new HashMap<>();
+        Map<Integer, Integer> guessFreq = new HashMap<>();
+
+        for (int i = 0; i < secretCode.getValue().size(); i++) {
+            int secretDigit = secretCode.getValue().get(i);
+            int guessDigit = guess.getValue().get(i);
+            if (secretDigit == guessDigit) {
+                wellPlaced++;
+            } else {
+                secretFreq.put(secretDigit, secretFreq.getOrDefault(secretDigit, 0) + 1);
+                guessFreq.put(guessDigit, guessFreq.getOrDefault(guessDigit, 0) + 1);
+            }
+        }
+
+        int misplaced = 0;
+        for (int digit : guessFreq.keySet()) {
+            int timesInGuess = guessFreq.get(digit);
+            int timesInSecret = secretFreq.getOrDefault(digit, 0);
+            misplaced += Math.min(timesInGuess, timesInSecret);
+        }
+
+        return new Feedback(wellPlaced, misplaced);
     }
 
     public boolean isGameOver() {
@@ -41,6 +59,6 @@ public class Game {
     }
 
     private List<Integer> generateSecretCode() {
-        return  List.of(1, 2, 3, 4); // TODO api call here
+        return List.of(1, 2, 3, 4); // TODO api call here
     }
 }

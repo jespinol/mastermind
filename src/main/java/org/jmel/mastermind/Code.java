@@ -4,9 +4,24 @@ import java.util.List;
 import java.util.Objects;
 
 public class Code {
+    private static final int DEFAULT_LENGTH = 4;
     private final List<Integer> value;
+
+
     public Code(List<Integer> code) {
-        this.value = code; // TODO add validation
+        if (isValid(code)) {
+            this.value = code;
+        } else {
+            throw new IllegalArgumentException("Invalid code");
+        }
+    }
+
+    List<Integer> getValue() {
+        return value;
+    }
+
+    private boolean isValid(List<Integer> code) {
+        return code.size() == DEFAULT_LENGTH;
     }
 
     @Override
