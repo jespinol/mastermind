@@ -10,11 +10,24 @@ public class Game {
     private final int maxAttempts = 10;
     private final int numColors = 8;
     private final Code secretCode;
-    private final List<Code> guessHistory;
+    private final List<Code> guessHistory = new ArrayList<>();
 
-    public Game() {
-        secretCode = new Code(generateSecretCode());
-        guessHistory = new ArrayList<>();
+    private Game() {
+        this.secretCode = new Code(generateSecretCode());
+    }
+
+    private Game(Code secretCode) {
+        this.secretCode = secretCode;
+    }
+
+    // get instance with defaults
+    public static Game createGame() {
+        return new Game();
+    }
+
+    // get instance with custom values (any of them)
+    public static Game createGameWithCode(Code secretCode) {
+        return new Game(secretCode);
     }
 
     public Feedback processGuess(List<Integer> guessInput) {
@@ -75,6 +88,7 @@ public class Game {
 //                .retrieve()
 //                .body(String.class);
 
+        // TODO handle failed requests
         String result = restClient
                 .get()
                 .uri(String.format("/integers/?num=%d&min=%d&max=%d&col=1&base=10&format=plain&rnd=new", codeLength, 0, numColors - 1))

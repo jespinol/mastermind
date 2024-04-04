@@ -9,8 +9,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GameTests {
-    // TODO: below works for now where secret code is hardcoded to [1, 2, 3, 4]
-    //  and the number of rounds allowed is 10 and can't be configured
+    // TODO: below works for now where the number of rounds allowed is 10 and can't be configured
     private final int DEFAULT_ROUNDS_ALLOWED = 10;
     private final List<Integer> correctGuess = List.of(1, 2, 3, 4);
     private final List<Integer> incorrectGuess = List.of(1, 2, 3, 5);
@@ -19,7 +18,7 @@ public class GameTests {
 
     @BeforeEach
     public void setUp() {
-        game = new Game();
+        game = Game.createGameWithCode(new Code(correctGuess));
     }
 
     @DisplayName("Game can be played with correct guess. Game.isGameOver() returns true after exactly one guess.")

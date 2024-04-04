@@ -9,8 +9,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CodeTests {
-    // Assumes that the Code constructor expects a list of integers of length 4
-    private final Game game = new Game();
+    private final Game game = Game.createGame();
 
     @DisplayName("A too-short guess throws an exception.")
     @Test

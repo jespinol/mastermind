@@ -4,9 +4,8 @@ import java.util.List;
 import java.util.Objects;
 
 public class Code {
-    private static final int DEFAULT_LENGTH = 4;
+    private static final int DEFAULT_LENGTH = 4; // TODO this is repeated here and in Game
     private final List<Integer> value;
-
 
     public Code(List<Integer> code) {
         if (isValid(code)) {
@@ -21,7 +20,7 @@ public class Code {
     }
 
     private boolean isValid(List<Integer> code) {
-        return code.size() == DEFAULT_LENGTH;
+        return Objects.nonNull(code) && code.size() == DEFAULT_LENGTH;
     }
 
     @Override

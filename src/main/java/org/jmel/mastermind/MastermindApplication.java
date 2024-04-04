@@ -12,7 +12,7 @@ public class MastermindApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(MastermindApplication.class, args);
-		Game game = new Game();
+		Game game = Game.createGame();
 
 		while (!game.isGameOver()) {
 			List<Integer> guess = getGuess();
