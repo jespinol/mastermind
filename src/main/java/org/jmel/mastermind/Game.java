@@ -1,15 +1,19 @@
 package org.jmel.mastermind;
 
+import org.springframework.web.client.RestClient;
+
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Game {
+    private final int codeLength = 4;
+    private final int maxAttempts = 10;
+    private final int numColors = 8;
     private final Code secretCode;
-    private final int maxAttempts;
     private final List<Code> guessHistory;
 
     public Game() {
         secretCode = new Code(generateSecretCode());
-        maxAttempts = 10;
         guessHistory = new ArrayList<>();
     }
 
@@ -59,6 +63,26 @@ public class Game {
     }
 
     private List<Integer> generateSecretCode() {
-        return List.of(1, 2, 3, 4); // TODO api call here
+        RestClient restClient = RestClient
+                .builder()
+                .baseUrl("https://www.random.org")
+                .build();
+
+        // TODO use quota check. A request for 4 integers from 0 to 7 costs 12 bits
+//        String quota = restClient
+//                .get()
+//                .uri("/quota/?format=plain")
+//                .retrieve()
+//                .body(String.class);
+
+        String result = restClient
+                .get()
+                .uri(String.format("/integers/?num=%d&min=%d&max=%d&col=1&base=10&format=plain&rnd=new", codeLength, 0, numColors - 1))
+                .retrieve()
+                .body(String.class);
+
+        return Arrays.stream(result.split("\n"))
+                .map(Integer::parseInt)
+                .collect(Collectors.toList());
     }
 }
