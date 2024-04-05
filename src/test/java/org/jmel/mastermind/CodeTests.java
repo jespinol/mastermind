@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CodeTests {
-    private final Game game = Game.createGame();
+    private final static Game game = new Game.Builder().build();
 
     @DisplayName("A too-short guess throws an exception.")
     @Test

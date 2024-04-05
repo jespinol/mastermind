@@ -1,6 +1,6 @@
 package org.jmel.mastermind;
 
-import org.jmel.mastermind.enums.CodeSecretGenerationStrategy;
+import org.jmel.mastermind.enums.CodeGenerationPreference;
 import org.junit.jupiter.api.*;
 
 import java.util.Collections;
@@ -61,7 +61,7 @@ public class GameBuilderTests {
         @Test
         void canOverrideCodeSupplierByProvidingCode() {
             gameBuilder
-                    .strategy(CodeSecretGenerationStrategy.LOCAL_RANDOM)
+                    .strategy(CodeGenerationPreference.LOCAL_RANDOM)
                     .secretCode(List.of(1, 1, 1, 1));
         }
     }
@@ -78,7 +78,7 @@ public class GameBuilderTests {
         @Test
         void buildGameWithUserDefinedStrategyButNoSecretCode() {
             assertThrows(Exception.class, () -> gameBuilder
-                    .strategy(CodeSecretGenerationStrategy.USER_DEFINED)
+                    .strategy(CodeGenerationPreference.USER_DEFINED)
                     .build());
         }
 
@@ -86,7 +86,7 @@ public class GameBuilderTests {
         void buildGameWithRandomStrategyAndSecretCode() {
             assertThrows(Exception.class, () -> gameBuilder
                     .secretCode(List.of(1, 1, 1, 1))
-                    .strategy(CodeSecretGenerationStrategy.RANDOM_ORG_API)
+                    .strategy(CodeGenerationPreference.RANDOM_ORG_API)
                     .build());
         }
 

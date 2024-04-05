@@ -1,6 +1,6 @@
 package org.jmel.mastermind;
 
-import org.jmel.mastermind.enums.CodeSecretGenerationStrategy;
+import org.jmel.mastermind.enums.CodeGenerationPreference;
 import org.jmel.mastermind.secret_code_suppliers.ApiCodeSupplier;
 import org.jmel.mastermind.secret_code_suppliers.LocalRandomCodeSupplier;
 import org.jmel.mastermind.secret_code_suppliers.UserDefinedCodeSupplier;
@@ -8,7 +8,8 @@ import org.jmel.mastermind.secret_code_suppliers.UserDefinedCodeSupplier;
 import java.util.*;
 import java.util.function.Supplier;
 
-import static org.jmel.mastermind.enums.CodeSecretGenerationStrategy.USER_DEFINED;
+import static org.jmel.mastermind.enums.CodeGenerationPreference.RANDOM_ORG_API;
+import static org.jmel.mastermind.enums.CodeGenerationPreference.USER_DEFINED;
 
 public class Game {
     private final int codeLength;
@@ -21,16 +22,16 @@ public class Game {
         this.codeLength = builder.codeLength;
         this.numColors = builder.numColors;
         this.maxAttempts = builder.maxAttempts;
-        this.secretCode = builder.secretCode;
+        this.secretCode = builder.codeSupplier.get();
     }
 
     public static class Builder {
         private int codeLength = 4;
         private int numColors = 8;
         private int maxAttempts = 10;
-        private CodeSecretGenerationStrategy strategy = CodeSecretGenerationStrategy.RANDOM_ORG_API;
+        private CodeGenerationPreference codeGenerationPreference = RANDOM_ORG_API;
         private List<Integer> secretCodeInput; // Required for user defined secret code
-        private Code secretCode; // Secret code to be used in the game
+        private Supplier<Code> codeSupplier;
 
         public Builder codeLength(int codeLength) {
             if (codeLength < 1) throw new IllegalArgumentException("Invalid code length");
@@ -50,28 +51,34 @@ public class Game {
             return this;
         }
 
-        public Builder strategy(CodeSecretGenerationStrategy strategy) {
+        public Builder strategy(CodeGenerationPreference strategy) {
             if (Objects.isNull(strategy)) throw new IllegalArgumentException("Invalid strategy");
-            this.strategy = strategy;
+            this.codeGenerationPreference = strategy;
             return this;
         }
 
         public Builder secretCode(List<Integer> secretCode) {
             if (Objects.isNull(secretCode)) throw new IllegalArgumentException("Invalid secret code");
             this.secretCodeInput = secretCode;
-            this.strategy = USER_DEFINED;
+            this.codeGenerationPreference = USER_DEFINED;
             this.codeLength = secretCode.size();
             return this;
         }
 
         public Game build() {
+            setCodeSupplier();
+
+            return new Game(this);
+        }
+
+        private void setCodeSupplier() {
             // They provided a secretCode, but they also specified they wanted a code generated for them
-            if (!strategy.equals(USER_DEFINED) && Objects.nonNull(secretCodeInput)) {
+            if (!codeGenerationPreference.equals(USER_DEFINED) && Objects.nonNull(secretCodeInput)) {
                 throw new IllegalArgumentException("Cannot specify a code with selected strategy");
             }
 
             // They intended to provide their own secret code, but didn't provide it, or provided it but violated configured values
-            if (strategy.equals(USER_DEFINED)) {
+            if (codeGenerationPreference.equals(USER_DEFINED)) {
                 if (Objects.isNull(secretCodeInput))
                     throw new IllegalArgumentException("Null secret code"); // TODO all code validation should be consolidated
                 if (secretCodeInput.size() != codeLength)
@@ -80,15 +87,12 @@ public class Game {
                     throw new IllegalArgumentException("Invalid secret code colors");
             }
 
-            Supplier<Code> codeSupplier = switch (strategy) {
+            this.codeSupplier = switch (codeGenerationPreference) {
                 case RANDOM_ORG_API -> new ApiCodeSupplier(codeLength, numColors);
                 case LOCAL_RANDOM -> new LocalRandomCodeSupplier(codeLength, numColors);
                 case USER_DEFINED -> new UserDefinedCodeSupplier(secretCodeInput);
                 default -> throw new IllegalArgumentException("Unimplemented CodeSupplier strategy");
             };
-            this.secretCode = codeSupplier.get();
-
-            return new Game(this);
         }
     }
 
