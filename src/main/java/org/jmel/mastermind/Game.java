@@ -1,5 +1,6 @@
 package org.jmel.mastermind;
 
+import org.springframework.http.client.JdkClientHttpRequestFactory;
 import org.springframework.web.client.RestClient;
 
 import java.util.*;
@@ -76,9 +77,14 @@ public class Game {
     }
 
     private List<Integer> generateSecretCode() {
+        // TODO handle connection errors
+        JdkClientHttpRequestFactory clientHttpRequestFactory = new JdkClientHttpRequestFactory();
+        clientHttpRequestFactory.setReadTimeout(1000);
+
         RestClient restClient = RestClient
                 .builder()
                 .baseUrl("https://www.random.org")
+                .requestFactory(clientHttpRequestFactory)
                 .build();
 
         // TODO use quota check. A request for 4 integers from 0 to 7 costs 12 bits
