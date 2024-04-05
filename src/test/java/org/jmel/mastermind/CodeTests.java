@@ -1,10 +1,14 @@
 package org.jmel.mastermind;
 
+import org.jmel.mastermind.secret_code_suppliers.ApiCodeSupplier;
+import org.jmel.mastermind.secret_code_suppliers.LocalRandomCodeSupplier;
+import org.jmel.mastermind.secret_code_suppliers.UserDefinedCodeSupplier;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -39,5 +43,27 @@ public class CodeTests {
     void codeWithEmptyGuess() {
 
         assertThrows(IllegalArgumentException.class, () -> game.processGuess(Collections.emptyList()));
+    }
+
+    @DisplayName("API code supplier successfully generates a Code object.")
+    @Test
+    void getCodeFromApi() { // TODO: test with a mock response
+        Supplier<Code> apiCodeSupplier = new ApiCodeSupplier(4, 8);
+        apiCodeSupplier.get();
+    }
+
+    @DisplayName("User defined code supplier successfully generates a Code object.")
+    @Test
+    void getCodeFromUserDefined() {
+        List<Integer> codeValue = List.of(1, 2, 3, 4);
+        Supplier<Code> userDefinedCodeSupplier = new UserDefinedCodeSupplier(codeValue);
+        userDefinedCodeSupplier.get();
+    }
+
+    @DisplayName("Locally random code supplier successfully returns a Code object.")
+    @Test
+    void getCodeFromLocalRandom() {
+        Supplier<Code> localRandomCodeSupplier = new LocalRandomCodeSupplier(4, 8);
+        localRandomCodeSupplier.get();
     }
 }
