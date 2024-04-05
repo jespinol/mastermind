@@ -9,16 +9,22 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GameTests {
-    // TODO: below works for now where the number of rounds allowed is 10 and can't be configured
-    private final int DEFAULT_ROUNDS_ALLOWED = 10;
-    private final List<Integer> correctGuess = List.of(1, 2, 3, 4);
-    private final List<Integer> incorrectGuess = List.of(1, 2, 3, 5);
+    private final static int NUM_COLORS = 8;
+    private final static int CODE_LENGTH = 4;
+    private final static int MAX_ATTEMPTS = 10;
+    private final static List<Integer> correctGuess = List.of(1, 2, 3, 4);
+    private final static List<Integer> incorrectGuess = List.of(1, 2, 3, 5);
 
     private Game game;
 
     @BeforeEach
     public void setUp() {
-        game = Game.createGameWithCode(correctGuess);
+        game = new Game.Builder()
+                .numColors(NUM_COLORS)
+                .codeLength(CODE_LENGTH)
+                .secretCode(correctGuess)
+                .maxAttempts(MAX_ATTEMPTS)
+                .build();
     }
 
     @DisplayName("Game can be played with correct guess. Game.isGameOver() returns true after exactly one guess.")
@@ -27,7 +33,7 @@ public class GameTests {
         game.processGuess(correctGuess);
 
         assertAll(
-                () -> assertEquals(game.getMovesLeft(), DEFAULT_ROUNDS_ALLOWED - 1),
+                () -> assertEquals(game.getMovesLeft(), MAX_ATTEMPTS - 1),
                 () -> assertTrue(game.isGameOver())
         );
     }
@@ -45,7 +51,7 @@ public class GameTests {
     @DisplayName("Player can make 10 incorrect guesses and no more.")
     @Test
     void loseGame() {
-        for (int i = 0; i < DEFAULT_ROUNDS_ALLOWED; i++) {
+        for (int i = 0; i < MAX_ATTEMPTS; i++) {
             game.processGuess(incorrectGuess);
         }
 
