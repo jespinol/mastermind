@@ -18,7 +18,7 @@ public class GameTests {
 
     @BeforeEach
     public void setUp() {
-        game = Game.createGameWithCode(new Code(correctGuess));
+        game = Game.createGameWithCode(correctGuess);
     }
 
     @DisplayName("Game can be played with correct guess. Game.isGameOver() returns true after exactly one guess.")

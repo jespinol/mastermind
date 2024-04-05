@@ -1,24 +1,23 @@
 package org.jmel.mastermind;
 
-import org.springframework.http.client.JdkClientHttpRequestFactory;
-import org.springframework.web.client.RestClient;
+import org.jmel.mastermind.secret_code_suppliers.ApiCodeSupplier;
+import org.jmel.mastermind.secret_code_suppliers.UserDefinedCodeSupplier;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Game {
     private final int codeLength = 4;
-    private final int maxAttempts = 10;
     private final int numColors = 8;
+    private final int maxAttempts = 10;
     private final Code secretCode;
     private final List<Code> guessHistory = new ArrayList<>();
 
     private Game() {
-        this.secretCode = new Code(generateSecretCode());
+        this.secretCode = new ApiCodeSupplier(codeLength, numColors).get();
     }
 
-    private Game(Code secretCode) {
-        this.secretCode = secretCode;
+    private Game(List<Integer> secretCodeValue) {
+        this.secretCode = new UserDefinedCodeSupplier(secretCodeValue).get();
     }
 
     // get instance with defaults
@@ -27,8 +26,8 @@ public class Game {
     }
 
     // get instance with custom values (any of them)
-    public static Game createGameWithCode(Code secretCode) {
-        return new Game(secretCode);
+    public static Game createGameWithCode(List<Integer> secretCodeValue) {
+        return new Game(secretCodeValue);
     }
 
     public Feedback processGuess(List<Integer> guessInput) {
@@ -74,35 +73,5 @@ public class Game {
     public boolean isGameOver() {
         boolean wonGame = !guessHistory.isEmpty() && Objects.equals(guessHistory.get(guessHistory.size() - 1), secretCode);
         return wonGame || getMovesLeft() == 0; // TODO ensure movesLeft can't be negative
-    }
-
-    private List<Integer> generateSecretCode() {
-        // TODO handle connection errors
-        JdkClientHttpRequestFactory clientHttpRequestFactory = new JdkClientHttpRequestFactory();
-        clientHttpRequestFactory.setReadTimeout(1000);
-
-        RestClient restClient = RestClient
-                .builder()
-                .baseUrl("https://www.random.org")
-                .requestFactory(clientHttpRequestFactory)
-                .build();
-
-        // TODO use quota check. A request for 4 integers from 0 to 7 costs 12 bits
-//        String quota = restClient
-//                .get()
-//                .uri("/quota/?format=plain")
-//                .retrieve()
-//                .body(String.class);
-
-        // TODO handle failed requests
-        String result = restClient
-                .get()
-                .uri(String.format("/integers/?num=%d&min=%d&max=%d&col=1&base=10&format=plain&rnd=new", codeLength, 0, numColors - 1))
-                .retrieve()
-                .body(String.class);
-
-        return Arrays.stream(result.split("\n"))
-                .map(Integer::parseInt)
-                .collect(Collectors.toList());
     }
 }
