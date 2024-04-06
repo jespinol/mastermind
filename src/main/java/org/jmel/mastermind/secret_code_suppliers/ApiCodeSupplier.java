@@ -7,10 +7,10 @@ import org.springframework.web.client.RestClient;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.Supplier;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class ApiCodeSupplier implements Supplier<Code> {
+public class ApiCodeSupplier implements CodeSupplier {
     private static final String BASE_URL = "https://www.random.org";
     private static final String QUOTA_URI = "/quota/?format=plain";
     private static final String INTS_URI = "/integers/?num=%d&min=%d&max=%d&col=1&base=10&format=plain&rnd=new";
@@ -23,15 +23,15 @@ public class ApiCodeSupplier implements Supplier<Code> {
     }
 
     @Override
-    public Code get() {
+    public Optional<Code> get() { // TODO: this doesn't return an empty optional if api calls fail -- can throw runtime exceptions
         RestClient restClient = buildRestClient();
 
         if (checkQuota(restClient)) {
             List<Integer> codeValue = getCodeFromApi(restClient);
-            return Code.from(codeValue, codeLength, numColors);
-        } else {
-            throw new RuntimeException("Not enough quota"); // TODO: or get code from LocalRandomCodeSupplier?
+            return Optional.of(Code.from(codeValue, codeLength, numColors));
         }
+
+        return Optional.empty();
     }
 
     private RestClient buildRestClient() {

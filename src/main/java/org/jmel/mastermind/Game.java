@@ -1,12 +1,8 @@
 package org.jmel.mastermind;
 
-import org.jmel.mastermind.secret_code_suppliers.CodeGenerationPreference;
-import org.jmel.mastermind.secret_code_suppliers.ApiCodeSupplier;
-import org.jmel.mastermind.secret_code_suppliers.LocalRandomCodeSupplier;
-import org.jmel.mastermind.secret_code_suppliers.UserDefinedCodeSupplier;
+import org.jmel.mastermind.secret_code_suppliers.*;
 
 import java.util.*;
-import java.util.function.Supplier;
 
 import static org.jmel.mastermind.secret_code_suppliers.CodeGenerationPreference.*;
 
@@ -21,7 +17,21 @@ public class Game {
         this.codeLength = builder.codeLength;
         this.numColors = builder.numColors;
         this.maxAttempts = builder.maxAttempts;
-        this.secretCode = builder.codeSupplier.get();
+
+        CodeSupplier codeSupplier = switch (builder.codeGenerationPreference) {
+            case RANDOM_ORG_API -> new ApiCodeSupplier(codeLength, numColors);
+            case LOCAL_RANDOM -> new LocalRandomCodeSupplier(codeLength, numColors);
+            case USER_DEFINED -> new UserDefinedCodeSupplier(Code.from(builder.secretCodeInput, codeLength, numColors));
+            default -> throw new IllegalArgumentException("Unimplemented CodeSupplier strategy");
+        };
+
+        Optional<Code> codeOptional = codeSupplier.get();
+        if (codeOptional.isEmpty()) {
+            codeSupplier = new LocalRandomCodeSupplier(codeLength, numColors);
+            codeOptional = codeSupplier.get();
+        }
+
+        this.secretCode = codeOptional.orElseThrow(() -> new IllegalStateException("Failed to generate secret code"));
     }
 
     public static class Builder {
@@ -30,29 +40,32 @@ public class Game {
         private int maxAttempts = 10;
         private CodeGenerationPreference codeGenerationPreference = RANDOM_ORG_API;
         private List<Integer> secretCodeInput; // Required for user defined secret code
-        private Supplier<Code> codeSupplier;
 
         public Builder codeLength(int codeLength) {
             if (codeLength < 1) throw new IllegalArgumentException("Invalid code length");
             this.codeLength = codeLength;
+
             return this;
         }
 
         public Builder numColors(int numColors) {
             if (numColors < 1) throw new IllegalArgumentException("Invalid number of colors");
             this.numColors = numColors;
+
             return this;
         }
 
         public Builder maxAttempts(int maxAttempts) {
             if (maxAttempts < 1) throw new IllegalArgumentException("Invalid number of attempts");
             this.maxAttempts = maxAttempts;
+
             return this;
         }
 
-        public Builder strategy(CodeGenerationPreference strategy) {
-            if (Objects.isNull(strategy)) throw new IllegalArgumentException("Invalid strategy");
-            this.codeGenerationPreference = strategy;
+        public Builder codeGenerationPreference(CodeGenerationPreference preference) {
+            if (Objects.isNull(preference)) throw new IllegalArgumentException("Invalid code generation preference");
+            this.codeGenerationPreference = preference;
+
             return this;
         }
 
@@ -61,37 +74,27 @@ public class Game {
             this.secretCodeInput = secretCode;
             this.codeGenerationPreference = USER_DEFINED;
             this.codeLength = secretCode.size();
+
             return this;
         }
 
         public Game build() {
-            setCodeSupplier();
-
-            return new Game(this);
-        }
-
-        private void setCodeSupplier() {
-            // They provided a secretCode, but they also specified they wanted a code generated for them
             if (!codeGenerationPreference.equals(USER_DEFINED) && Objects.nonNull(secretCodeInput)) {
                 throw new IllegalArgumentException("Cannot specify a code with selected strategy");
             }
 
-            this.codeSupplier = switch (codeGenerationPreference) {
-                case RANDOM_ORG_API -> new ApiCodeSupplier(codeLength, numColors);
-                case LOCAL_RANDOM -> new LocalRandomCodeSupplier(codeLength, numColors);
-                case USER_DEFINED -> new UserDefinedCodeSupplier(Code.from(secretCodeInput, codeLength, numColors));
-                default -> throw new IllegalArgumentException("Unimplemented CodeSupplier strategy");
-            };
+            return new Game(this);
         }
     }
 
     public Feedback processGuess(List<Integer> guessInput) {
         if (isGameOver()) {
-            throw new IllegalStateException("Max attempts reached"); // TODO custom checked exception
+            throw new IllegalStateException("Max attempts reached"); // TODO custom checked exception?
         }
 
-        Code guess = Code.from(guessInput, this.codeLength, this.numColors); // TODO custom checked exception
+        Code guess = Code.from(guessInput, this.codeLength, this.numColors); // TODO custom checked exception?
         guessHistory.add(guess);
+
         return computeFeedback(this.secretCode, guess);
     }
 
@@ -127,6 +130,7 @@ public class Game {
 
     public boolean isGameOver() {
         boolean wonGame = !guessHistory.isEmpty() && Objects.equals(guessHistory.get(guessHistory.size() - 1), secretCode);
+
         return wonGame || getMovesLeft() == 0; // TODO ensure movesLeft can't be negative
     }
 }

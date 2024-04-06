@@ -1,6 +1,7 @@
 package org.jmel.mastermind;
 
 import org.jmel.mastermind.secret_code_suppliers.ApiCodeSupplier;
+import org.jmel.mastermind.secret_code_suppliers.CodeSupplier;
 import org.jmel.mastermind.secret_code_suppliers.LocalRandomCodeSupplier;
 import org.jmel.mastermind.secret_code_suppliers.UserDefinedCodeSupplier;
 import org.junit.jupiter.api.DisplayName;
@@ -8,9 +9,9 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CodeTests {
     private final static Game game = new Game.Builder().build();
@@ -47,9 +48,10 @@ public class CodeTests {
 
     @DisplayName("API code supplier successfully generates a Code object.")
     @Test
-    void getCodeFromApi() { // TODO: test with a mock response
-        Supplier<Code> apiCodeSupplier = new ApiCodeSupplier(4, 8);
-        apiCodeSupplier.get();
+    void getCodeFromApi() { // TODO: test with a mock response instead of actually sending to random.org
+        CodeSupplier apiCodeSupplier = new ApiCodeSupplier(4, 8);
+
+        assertTrue(apiCodeSupplier.get().isPresent());
     }
 
     @DisplayName("User defined code supplier successfully generates a Code object.")
@@ -57,14 +59,16 @@ public class CodeTests {
     void getCodeFromUserDefined() {
         List<Integer> codeValue = List.of(1, 2, 3, 4);
         Code secretCode = Code.from(codeValue, 4, 8);
-        Supplier<Code> userDefinedCodeSupplier = new UserDefinedCodeSupplier(secretCode);
-        userDefinedCodeSupplier.get();
+        CodeSupplier userDefinedCodeSupplier = new UserDefinedCodeSupplier(secretCode);
+
+        assertTrue(userDefinedCodeSupplier.get().isPresent());
     }
 
     @DisplayName("Locally random code supplier successfully returns a Code object.")
     @Test
     void getCodeFromLocalRandom() {
-        Supplier<Code> localRandomCodeSupplier = new LocalRandomCodeSupplier(4, 8);
-        localRandomCodeSupplier.get();
+        CodeSupplier localRandomCodeSupplier = new LocalRandomCodeSupplier(4, 8);
+
+        assertTrue(localRandomCodeSupplier.get().isPresent());
     }
 }

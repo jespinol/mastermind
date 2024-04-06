@@ -1,6 +1,5 @@
 package org.jmel.mastermind;
 
-import org.jmel.mastermind.secret_code_suppliers.CodeGenerationPreference;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -9,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Collections;
 import java.util.List;
 
+import static org.jmel.mastermind.secret_code_suppliers.CodeGenerationPreference.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class GameBuilderTests {
@@ -61,7 +61,7 @@ public class GameBuilderTests {
         @Test
         void canOverrideCodeSupplierByProvidingCode() {
             gameBuilder
-                    .strategy(CodeGenerationPreference.LOCAL_RANDOM)
+                    .codeGenerationPreference(LOCAL_RANDOM)
                     .secretCode(List.of(1, 1, 1, 1));
         }
     }
@@ -78,7 +78,7 @@ public class GameBuilderTests {
         @Test
         void buildGameWithUserDefinedStrategyButNoSecretCode() {
             assertThrows(Exception.class, () -> gameBuilder
-                    .strategy(CodeGenerationPreference.USER_DEFINED)
+                    .codeGenerationPreference(USER_DEFINED)
                     .build());
         }
 
@@ -86,7 +86,7 @@ public class GameBuilderTests {
         void buildGameWithRandomStrategyAndSecretCode() {
             assertThrows(Exception.class, () -> gameBuilder
                     .secretCode(List.of(1, 1, 1, 1))
-                    .strategy(CodeGenerationPreference.RANDOM_ORG_API)
+                    .codeGenerationPreference(RANDOM_ORG_API)
                     .build());
         }
 
@@ -114,7 +114,7 @@ public class GameBuilderTests {
         @Test
         void buildGameWithInvalidStrategy() {
             assertThrows(Exception.class, () -> gameBuilder
-                    .strategy(null)
+                    .codeGenerationPreference(null)
                     .build());
         }
 
@@ -141,10 +141,11 @@ public class GameBuilderTests {
                     .codeLength(2)
                     .build());
         }
+
         @Test
         void buildGameWithTooLongCode() {
             assertThrows(Exception.class, () -> gameBuilder
-                    .secretCode(List.of(1,2,3,4,5))
+                    .secretCode(List.of(1, 2, 3, 4, 5))
                     .codeLength(4)
                     .build());
         }

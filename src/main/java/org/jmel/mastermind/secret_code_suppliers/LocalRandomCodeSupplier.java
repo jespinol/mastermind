@@ -4,9 +4,9 @@ import org.jmel.mastermind.Code;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
+import java.util.Optional;
 
-public class LocalRandomCodeSupplier implements Supplier<Code> {
+public class LocalRandomCodeSupplier implements CodeSupplier {
     private final int codeLength;
     private final int numColors;
 
@@ -16,11 +16,12 @@ public class LocalRandomCodeSupplier implements Supplier<Code> {
     }
 
     @Override
-    public Code get() {
+    public Optional<Code> get() {
         List<Integer> codeValue = new ArrayList<>();
         for (int i = 0; i < this.codeLength; i++) {
-            codeValue.add((int) (Math.random() * this.numColors));
+            codeValue.add((int) (Math.random() * this.numColors)); // TODO: use better/simpler strategy here
         }
-        return Code.from(codeValue, codeLength, numColors);
+
+        return Optional.of(Code.from(codeValue, this.codeLength, this.numColors));
     }
 }
