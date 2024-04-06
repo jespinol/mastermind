@@ -1,7 +1,10 @@
 package org.jmel.mastermind;
 
 import org.jmel.mastermind.enums.CodeGenerationPreference;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.List;
@@ -25,7 +28,6 @@ public class GameBuilderTests {
         }
 
         @Test
-        @Disabled("This test is disabled because code lengths other than 4 is not implemented yet.")
         void canBuildAGameWithCustomValues() {
             gameBuilder
                     .numColors(9)
@@ -44,14 +46,12 @@ public class GameBuilderTests {
         }
 
         @Test
-        @Disabled("This test is disabled because code lengths other than 4 is not implemented yet.")
         void canBuildAGameWithLongerSecretCodeOnly() {
             gameBuilder
                     .secretCode(Collections.nCopies(5, 1));
         }
 
         @Test
-        @Disabled
         void canOverrideCodeLength() {
             gameBuilder
                     .codeLength(5)
@@ -119,10 +119,33 @@ public class GameBuilderTests {
         }
 
         @Test
-        void buildGameWithInvalidSecretCodeColors() {
+        void buildGameWithTooHighColorInCode() {
             assertThrows(Exception.class, () -> gameBuilder
-                    .secretCode(List.of(0, 0, 0, 1))
+                    .secretCode(List.of(1))
                     .numColors(1)
+                    .build());
+        }
+
+        @Test
+        void buildGameWithTooLowColorInCode() {
+            assertThrows(Exception.class, () -> gameBuilder
+                    .secretCode(List.of(-1))
+                    .numColors(1)
+                    .build());
+        }
+
+        @Test
+        void buildGameWithTooShortCode() {
+            assertThrows(Exception.class, () -> gameBuilder
+                    .secretCode(List.of(0))
+                    .codeLength(2)
+                    .build());
+        }
+        @Test
+        void buildGameWithTooLongCode() {
+            assertThrows(Exception.class, () -> gameBuilder
+                    .secretCode(List.of(1,2,3,4,5))
+                    .codeLength(4)
                     .build());
         }
     }

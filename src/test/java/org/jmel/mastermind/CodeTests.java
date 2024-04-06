@@ -56,7 +56,8 @@ public class CodeTests {
     @Test
     void getCodeFromUserDefined() {
         List<Integer> codeValue = List.of(1, 2, 3, 4);
-        Supplier<Code> userDefinedCodeSupplier = new UserDefinedCodeSupplier(codeValue);
+        Code secretCode = Code.from(codeValue, 4, 8);
+        Supplier<Code> userDefinedCodeSupplier = new UserDefinedCodeSupplier(secretCode);
         userDefinedCodeSupplier.get();
     }
 

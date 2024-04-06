@@ -21,6 +21,6 @@ public class LocalRandomCodeSupplier implements Supplier<Code> {
         for (int i = 0; i < this.codeLength; i++) {
             codeValue.add((int) (Math.random() * this.numColors));
         }
-        return new Code(codeValue);
+        return Code.from(codeValue, codeLength, numColors);
     }
 }

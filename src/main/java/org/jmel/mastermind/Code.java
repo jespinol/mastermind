@@ -1,26 +1,29 @@
 package org.jmel.mastermind;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 public class Code {
-    private static final int DEFAULT_LENGTH = 4; // TODO this is repeated here and in Game
     private final List<Integer> value;
 
-    public Code(List<Integer> code) {
-        if (isValid(code)) {
-            this.value = code;
-        } else {
-            throw new IllegalArgumentException("Invalid code");
-        }
+    private Code(List<Integer> value) {
+        this.value = Collections.unmodifiableList(value);
     }
 
-    List<Integer> getValue() {
+    public static Code from(List<Integer> possibleCode, int codeLength, int numColors) {
+        if (Objects.isNull(possibleCode))
+            throw new IllegalArgumentException("Null secret code");
+        if (possibleCode.size() != codeLength)
+            throw new IllegalArgumentException("Invalid secret code length");
+        if (possibleCode.stream().anyMatch(i -> i < 0 || i >= numColors))
+            throw new IllegalArgumentException("Invalid secret code colors");
+
+        return new Code(possibleCode);
+    }
+
+    public List<Integer> value() {
         return value;
-    }
-
-    private boolean isValid(List<Integer> code) {
-        return Objects.nonNull(code) && code.size() == DEFAULT_LENGTH;
     }
 
     @Override

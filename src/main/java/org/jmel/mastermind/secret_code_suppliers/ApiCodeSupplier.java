@@ -27,7 +27,7 @@ public class ApiCodeSupplier implements Supplier<Code> {
 
         if (checkQuota(restClient)) {
             List<Integer> codeValue = getCodeFromApi(restClient);
-            return new Code(codeValue);
+            return Code.from(codeValue, codeLength, numColors);
         } else {
             throw new RuntimeException("Not enough quota"); // TODO: or get code from LocalRandomCodeSupplier?
         }

@@ -77,20 +77,10 @@ public class Game {
                 throw new IllegalArgumentException("Cannot specify a code with selected strategy");
             }
 
-            // They intended to provide their own secret code, but didn't provide it, or provided it but violated configured values
-            if (codeGenerationPreference.equals(USER_DEFINED)) {
-                if (Objects.isNull(secretCodeInput))
-                    throw new IllegalArgumentException("Null secret code"); // TODO all code validation should be consolidated
-                if (secretCodeInput.size() != codeLength)
-                    throw new IllegalArgumentException("Invalid secret code length");
-                if (secretCodeInput.stream().anyMatch(i -> i < 0 || i >= numColors))
-                    throw new IllegalArgumentException("Invalid secret code colors");
-            }
-
             this.codeSupplier = switch (codeGenerationPreference) {
                 case RANDOM_ORG_API -> new ApiCodeSupplier(codeLength, numColors);
                 case LOCAL_RANDOM -> new LocalRandomCodeSupplier(codeLength, numColors);
-                case USER_DEFINED -> new UserDefinedCodeSupplier(secretCodeInput);
+                case USER_DEFINED -> new UserDefinedCodeSupplier(Code.from(secretCodeInput, codeLength, numColors));
                 default -> throw new IllegalArgumentException("Unimplemented CodeSupplier strategy");
             };
         }
@@ -98,10 +88,10 @@ public class Game {
 
     public Feedback processGuess(List<Integer> guessInput) {
         if (isGameOver()) {
-            throw new IllegalStateException("Max attempts reached"); // TODO custom exception
+            throw new IllegalStateException("Max attempts reached"); // TODO custom checked exception
         }
 
-        Code guess = new Code(guessInput);
+        Code guess = Code.from(guessInput, this.codeLength, this.numColors); // TODO custom checked exception
         guessHistory.add(guess);
         return computeFeedback(this.secretCode, guess);
     }
@@ -115,9 +105,9 @@ public class Game {
         Map<Integer, Integer> secretFreq = new HashMap<>();
         Map<Integer, Integer> guessFreq = new HashMap<>();
 
-        for (int i = 0; i < secretCode.getValue().size(); i++) {
-            int secretDigit = secretCode.getValue().get(i);
-            int guessDigit = guess.getValue().get(i);
+        for (int i = 0; i < secretCode.value().size(); i++) {
+            int secretDigit = secretCode.value().get(i);
+            int guessDigit = guess.value().get(i);
             if (secretDigit == guessDigit) {
                 wellPlaced++;
             } else {
