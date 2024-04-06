@@ -1,12 +1,12 @@
 package org.jmel.mastermind.secret_code_suppliers;
 
 import org.jmel.mastermind.Code;
+import org.jmel.mastermind.custom_exceptions.InvalidCodeException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
-public class LocalRandomCodeSupplier implements Supplier<Code> {
+public class LocalRandomCodeSupplier implements CodeSupplier {
     private final int codeLength;
     private final int numColors;
 
@@ -19,8 +19,13 @@ public class LocalRandomCodeSupplier implements Supplier<Code> {
     public Code get() {
         List<Integer> codeValue = new ArrayList<>();
         for (int i = 0; i < this.codeLength; i++) {
-            codeValue.add((int) (Math.random() * this.numColors));
+            codeValue.add((int) (Math.random() * this.numColors)); // TODO use bounds instead of scaling myself
         }
-        return Code.from(codeValue, codeLength, numColors);
+
+        try {
+            return Code.from(codeValue, codeLength, numColors);
+        } catch (InvalidCodeException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

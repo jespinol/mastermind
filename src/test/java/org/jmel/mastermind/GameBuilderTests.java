@@ -1,6 +1,6 @@
 package org.jmel.mastermind;
 
-import org.jmel.mastermind.enums.CodeGenerationPreference;
+import org.jmel.mastermind.secret_code_suppliers.CodeGenerationPreference;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;

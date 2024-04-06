@@ -1,15 +1,13 @@
 package org.jmel.mastermind;
 
-import org.jmel.mastermind.enums.CodeGenerationPreference;
-import org.jmel.mastermind.secret_code_suppliers.ApiCodeSupplier;
-import org.jmel.mastermind.secret_code_suppliers.LocalRandomCodeSupplier;
-import org.jmel.mastermind.secret_code_suppliers.UserDefinedCodeSupplier;
+import org.jmel.mastermind.custom_exceptions.InvalidCodeException;
+import org.jmel.mastermind.secret_code_suppliers.*;
 
 import java.util.*;
 import java.util.function.Supplier;
 
-import static org.jmel.mastermind.enums.CodeGenerationPreference.RANDOM_ORG_API;
-import static org.jmel.mastermind.enums.CodeGenerationPreference.USER_DEFINED;
+import static org.jmel.mastermind.secret_code_suppliers.CodeGenerationPreference.RANDOM_ORG_API;
+import static org.jmel.mastermind.secret_code_suppliers.CodeGenerationPreference.USER_DEFINED;
 
 public class Game {
     private final int codeLength;
@@ -22,7 +20,12 @@ public class Game {
         this.codeLength = builder.codeLength;
         this.numColors = builder.numColors;
         this.maxAttempts = builder.maxAttempts;
-        this.secretCode = builder.codeSupplier.get();
+        try {
+            this.secretCode = builder.codeSupplier.get();
+        } catch (InvalidCodeException e) { // TODO: what if the supplier is USER_DEFINED but still throws some code related exception?
+            throw new RuntimeException(e); // TODO: Fallback to another strategy
+
+        }
     }
 
     public static class Builder {
@@ -31,7 +34,7 @@ public class Game {
         private int maxAttempts = 10;
         private CodeGenerationPreference codeGenerationPreference = RANDOM_ORG_API;
         private List<Integer> secretCodeInput; // Required for user defined secret code
-        private Supplier<Code> codeSupplier;
+        private CodeSupplier codeSupplier;
 
         public Builder codeLength(int codeLength) {
             if (codeLength < 1) throw new IllegalArgumentException("Invalid code length");
@@ -65,13 +68,13 @@ public class Game {
             return this;
         }
 
-        public Game build() {
+        public Game build() throws InvalidCodeException {
             setCodeSupplier();
 
             return new Game(this);
         }
 
-        private void setCodeSupplier() {
+        private void setCodeSupplier() throws InvalidCodeException {
             // They provided a secretCode, but they also specified they wanted a code generated for them
             if (!codeGenerationPreference.equals(USER_DEFINED) && Objects.nonNull(secretCodeInput)) {
                 throw new IllegalArgumentException("Cannot specify a code with selected strategy");
@@ -86,7 +89,7 @@ public class Game {
         }
     }
 
-    public Feedback processGuess(List<Integer> guessInput) {
+    public Feedback processGuess(List<Integer> guessInput) throws InvalidCodeException {
         if (isGameOver()) {
             throw new IllegalStateException("Max attempts reached"); // TODO custom checked exception
         }

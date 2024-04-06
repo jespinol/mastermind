@@ -1,5 +1,7 @@
 package org.jmel.mastermind;
 
+import org.jmel.mastermind.custom_exceptions.InvalidCodeException;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -11,13 +13,13 @@ public class Code {
         this.value = Collections.unmodifiableList(value);
     }
 
-    public static Code from(List<Integer> possibleCode, int codeLength, int numColors) {
+    public static Code from(List<Integer> possibleCode, int codeLength, int numColors) throws InvalidCodeException {
         if (Objects.isNull(possibleCode))
-            throw new IllegalArgumentException("Null secret code");
+            throw new InvalidCodeException("Null secret code");
         if (possibleCode.size() != codeLength)
-            throw new IllegalArgumentException("Invalid secret code length");
+            throw new InvalidCodeException("Invalid secret code length");
         if (possibleCode.stream().anyMatch(i -> i < 0 || i >= numColors))
-            throw new IllegalArgumentException("Invalid secret code colors");
+            throw new InvalidCodeException("Invalid secret code colors");
 
         return new Code(possibleCode);
     }

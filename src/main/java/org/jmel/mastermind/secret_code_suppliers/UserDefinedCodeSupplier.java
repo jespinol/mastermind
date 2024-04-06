@@ -2,9 +2,7 @@ package org.jmel.mastermind.secret_code_suppliers;
 
 import org.jmel.mastermind.Code;
 
-import java.util.function.Supplier;
-
-public class UserDefinedCodeSupplier implements Supplier<Code> {
+public class UserDefinedCodeSupplier implements CodeSupplier {
     private final Code secretCode;
 
     public UserDefinedCodeSupplier(Code secretCode) {
