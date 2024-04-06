@@ -6,6 +6,7 @@ import org.springframework.web.client.RestClient;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -48,24 +49,24 @@ public class ApiCodeSupplier implements Supplier<Code> {
     private boolean checkQuota(RestClient restClient) {
         // TODO: use quota check. A request for 4 integers from 0 to 7 costs 12 bits.
         //  Check for response errors and handle them.
-        String quota = restClient
+        String quota = Objects.requireNonNull(restClient
                 .get()
                 .uri(QUOTA_URI)
                 .retrieve()
-                .body(String.class).trim(); // TODO: could be null when calling trim()
+                .body(String.class)).trim();
 
         return Integer.parseInt(quota) >= this.codeLength * 4;
     }
 
     private List<Integer> getCodeFromApi(RestClient restClient) {
         // TODO handle failed requests
-        String result = restClient
+        String result = Objects.requireNonNull(restClient
                 .get()
                 .uri(generateRequestPath())
                 .retrieve()
-                .body(String.class);
+                .body(String.class));
 
-        return Arrays.stream(result.split("\n")) // TODO: handle warning "Method invocation 'split' may produce 'NullPointerException'"
+        return Arrays.stream(result.split("\n"))
                 .map(Integer::parseInt)
                 .collect(Collectors.toList());
     }

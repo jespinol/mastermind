@@ -1,6 +1,6 @@
 package org.jmel.mastermind;
 
-import org.jmel.mastermind.enums.CodeGenerationPreference;
+import org.jmel.mastermind.secret_code_suppliers.CodeGenerationPreference;
 import org.jmel.mastermind.secret_code_suppliers.ApiCodeSupplier;
 import org.jmel.mastermind.secret_code_suppliers.LocalRandomCodeSupplier;
 import org.jmel.mastermind.secret_code_suppliers.UserDefinedCodeSupplier;
@@ -8,8 +8,7 @@ import org.jmel.mastermind.secret_code_suppliers.UserDefinedCodeSupplier;
 import java.util.*;
 import java.util.function.Supplier;
 
-import static org.jmel.mastermind.enums.CodeGenerationPreference.RANDOM_ORG_API;
-import static org.jmel.mastermind.enums.CodeGenerationPreference.USER_DEFINED;
+import static org.jmel.mastermind.secret_code_suppliers.CodeGenerationPreference.*;
 
 public class Game {
     private final int codeLength;
