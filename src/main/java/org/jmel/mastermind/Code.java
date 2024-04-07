@@ -23,7 +23,7 @@ public class Code {
     }
 
     public List<Integer> value() {
-        return value;
+        return List.copyOf(value);
     }
 
     @Override

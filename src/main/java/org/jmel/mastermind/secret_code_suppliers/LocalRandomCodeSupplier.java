@@ -4,6 +4,7 @@ import org.jmel.mastermind.Code;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class LocalRandomCodeSupplier implements CodeSupplier {
     private final int codeLength;
@@ -17,8 +18,9 @@ public class LocalRandomCodeSupplier implements CodeSupplier {
     @Override
     public Code get() {
         List<Integer> codeValue = new ArrayList<>();
+        Random random = new Random();
         for (int i = 0; i < this.codeLength; i++) {
-            codeValue.add((int) (Math.random() * this.numColors)); // TODO: use better/simpler strategy here
+            codeValue.add(random.nextInt(0, numColors));
         }
 
         return Code.from(codeValue, this.codeLength, this.numColors);

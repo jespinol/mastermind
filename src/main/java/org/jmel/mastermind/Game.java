@@ -79,7 +79,6 @@ public class Game {
                 default -> throw new IllegalArgumentException("Unimplemented CodeSupplier strategy");
             };
 
-
             try {
                 this.secretCode = codeSupplier.get();
                 return new Game(this);
@@ -92,10 +91,10 @@ public class Game {
 
     public Feedback processGuess(List<Integer> guessInput) {
         if (isGameOver()) {
-            throw new IllegalStateException("Max attempts reached"); // TODO custom checked exception?
+            throw new IllegalStateException("Max attempts reached");
         }
 
-        Code guess = Code.from(guessInput, this.codeLength, this.numColors); // TODO custom checked exception?
+        Code guess = Code.from(guessInput, this.codeLength, this.numColors);
         guessHistory.add(guess);
 
         return computeFeedback(this.secretCode, guess);
