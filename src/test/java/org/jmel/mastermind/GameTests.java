@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -18,7 +19,7 @@ public class GameTests {
     private Game game;
 
     @BeforeEach
-    public void setUp() {
+    public void setUp() throws IOException {
         game = new Game.Builder()
                 .numColors(NUM_COLORS)
                 .codeLength(CODE_LENGTH)
@@ -56,7 +57,7 @@ public class GameTests {
         }
 
         assertAll(
-                () -> assertThrows(Exception.class, () -> game.processGuess(incorrectGuess)),
+                () -> assertThrows(IllegalStateException.class, () -> game.processGuess(incorrectGuess)),
                 () -> assertEquals(game.getMovesLeft(), 0),
                 () -> assertTrue(game.isGameOver()));
     }

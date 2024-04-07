@@ -7,14 +7,25 @@ import org.jmel.mastermind.secret_code_suppliers.UserDefinedCodeSupplier;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
+import static org.jmel.mastermind.secret_code_suppliers.CodeGenerationPreference.LOCAL_RANDOM;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CodeTests {
-    private final static Game game = new Game.Builder().build();
+    private final static Game game;
+
+    static {
+        try {
+            game = new Game.Builder()
+                    .codeGenerationPreference(LOCAL_RANDOM)
+                    .build();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @DisplayName("A too-short guess throws an exception.")
     @Test
@@ -48,27 +59,27 @@ public class CodeTests {
 
     @DisplayName("API code supplier successfully generates a Code object.")
     @Test
-    void getCodeFromApi() { // TODO: test with a mock response instead of actually sending to random.org
+    void getCodeFromApi() throws IOException { // TODO: test with a mock response instead of actually sending to random.org
         CodeSupplier apiCodeSupplier = new ApiCodeSupplier(4, 8);
 
-        assertTrue(apiCodeSupplier.get().isPresent());
+        apiCodeSupplier.get();
     }
 
     @DisplayName("User defined code supplier successfully generates a Code object.")
     @Test
-    void getCodeFromUserDefined() {
+    void getCodeFromUserDefined() throws IOException {
         List<Integer> codeValue = List.of(1, 2, 3, 4);
         Code secretCode = Code.from(codeValue, 4, 8);
         CodeSupplier userDefinedCodeSupplier = new UserDefinedCodeSupplier(secretCode);
 
-        assertTrue(userDefinedCodeSupplier.get().isPresent());
+        userDefinedCodeSupplier.get();
     }
 
     @DisplayName("Locally random code supplier successfully returns a Code object.")
     @Test
-    void getCodeFromLocalRandom() {
+    void getCodeFromLocalRandom() throws IOException {
         CodeSupplier localRandomCodeSupplier = new LocalRandomCodeSupplier(4, 8);
 
-        assertTrue(localRandomCodeSupplier.get().isPresent());
+        localRandomCodeSupplier.get();
     }
 }

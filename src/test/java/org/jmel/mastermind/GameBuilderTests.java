@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class GameBuilderTests {
         }
 
         @AfterEach
-        void build() {
+        void build() throws IOException {
             gameBuilder.build();
         }
 
@@ -77,14 +78,14 @@ public class GameBuilderTests {
 
         @Test
         void buildGameWithUserDefinedStrategyButNoSecretCode() {
-            assertThrows(Exception.class, () -> gameBuilder
+            assertThrows(IllegalArgumentException.class, () -> gameBuilder
                     .codeGenerationPreference(USER_DEFINED)
                     .build());
         }
 
         @Test
         void buildGameWithRandomStrategyAndSecretCode() {
-            assertThrows(Exception.class, () -> gameBuilder
+            assertThrows(IllegalArgumentException.class, () -> gameBuilder
                     .secretCode(List.of(1, 1, 1, 1))
                     .codeGenerationPreference(RANDOM_ORG_API)
                     .build());
@@ -92,35 +93,35 @@ public class GameBuilderTests {
 
         @Test
         void buildGameWithInvalidNumColors() {
-            assertThrows(Exception.class, () -> gameBuilder
+            assertThrows(IllegalArgumentException.class, () -> gameBuilder
                     .numColors(0)
                     .build());
         }
 
         @Test
         void buildGameWithInvalidCodeLength() {
-            assertThrows(Exception.class, () -> gameBuilder
+            assertThrows(IllegalArgumentException.class, () -> gameBuilder
                     .codeLength(0)
                     .build());
         }
 
         @Test
         void buildGameWithInvalidMaxAttempts() {
-            assertThrows(Exception.class, () -> gameBuilder
+            assertThrows(IllegalArgumentException.class, () -> gameBuilder
                     .maxAttempts(0)
                     .build());
         }
 
         @Test
         void buildGameWithInvalidStrategy() {
-            assertThrows(Exception.class, () -> gameBuilder
+            assertThrows(IllegalArgumentException.class, () -> gameBuilder
                     .codeGenerationPreference(null)
                     .build());
         }
 
         @Test
         void buildGameWithTooHighColorInCode() {
-            assertThrows(Exception.class, () -> gameBuilder
+            assertThrows(IllegalArgumentException.class, () -> gameBuilder
                     .secretCode(List.of(1))
                     .numColors(1)
                     .build());
@@ -128,7 +129,7 @@ public class GameBuilderTests {
 
         @Test
         void buildGameWithTooLowColorInCode() {
-            assertThrows(Exception.class, () -> gameBuilder
+            assertThrows(IllegalArgumentException.class, () -> gameBuilder
                     .secretCode(List.of(-1))
                     .numColors(1)
                     .build());
@@ -136,7 +137,7 @@ public class GameBuilderTests {
 
         @Test
         void buildGameWithTooShortCode() {
-            assertThrows(Exception.class, () -> gameBuilder
+            assertThrows(IllegalArgumentException.class, () -> gameBuilder
                     .secretCode(List.of(0))
                     .codeLength(2)
                     .build());
@@ -144,7 +145,7 @@ public class GameBuilderTests {
 
         @Test
         void buildGameWithTooLongCode() {
-            assertThrows(Exception.class, () -> gameBuilder
+            assertThrows(IllegalArgumentException.class, () -> gameBuilder
                     .secretCode(List.of(1, 2, 3, 4, 5))
                     .codeLength(4)
                     .build());

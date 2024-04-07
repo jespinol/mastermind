@@ -2,8 +2,6 @@ package org.jmel.mastermind.secret_code_suppliers;
 
 import org.jmel.mastermind.Code;
 
-import java.util.Optional;
-
 public class UserDefinedCodeSupplier implements CodeSupplier {
     private final Code secretCode;
 
@@ -12,7 +10,7 @@ public class UserDefinedCodeSupplier implements CodeSupplier {
     }
 
     @Override
-    public Optional<Code> get() {
-        return Optional.of(secretCode);
+    public Code get() {
+        return secretCode;
     }
 }

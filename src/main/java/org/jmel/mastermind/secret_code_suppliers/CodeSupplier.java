@@ -2,8 +2,8 @@ package org.jmel.mastermind.secret_code_suppliers;
 
 import org.jmel.mastermind.Code;
 
-import java.util.Optional;
+import java.io.IOException;
 
 public interface CodeSupplier {
-    Optional<Code> get();
+    Code get() throws IOException;
 }
