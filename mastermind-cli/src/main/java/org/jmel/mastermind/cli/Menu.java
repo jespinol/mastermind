@@ -41,7 +41,7 @@ public enum Menu {
             4. Permutation"""), // changes here must be reflected in feedbackStrategyMap
     SETTINGS_CODE_GENERATION_PREFERENCE("""
             ************************
-            **   Code Provider    **
+            **   Code Supplier    **
             ************************
             Choose one:
             1. Random.org API (default)

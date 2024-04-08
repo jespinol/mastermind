@@ -16,7 +16,14 @@ public class MastermindCliApplication {
     private static final Game.Builder builder = new Game.Builder();
 
     public static void main(String[] args) throws IOException {
+        Game game = setUpGame();
+
+        play(game);
+    }
+
+    public static Game setUpGame() throws IOException {
         while (currentMenu != EXIT && currentMenu != PLAY) {
+            clearScreen();
             System.out.println(currentMenu);
             currentMenu = getNextMenu();
         }
@@ -24,21 +31,14 @@ public class MastermindCliApplication {
         System.out.println(currentMenu);
         if (currentMenu == EXIT) System.exit(0);
 
-        Game game = builder.build();
-        play(game);
-    }
+        try {
+            return builder.build();
+        } catch (IOException e) {
+            System.out.println("Error creating game: " + e.getMessage());
+            System.out.println("Please select a different code supplier");
+            currentMenu = SETTINGS_CODE_GENERATION_PREFERENCE; // TODO: make this a custom menu maybe
 
-    private static void play(Game game) {
-        System.out.printf("""
-                The secret code is %d digits long from 0 to %d
-                Enter your guess in one line, space separated
-                """, game.codeLength(), game.numColors() - 1);
-
-        while (!game.isGameWon() && (game.movesCompleted() < game.maxAttempts())) {
-            System.out.printf("\nRound %d%n", game.movesCompleted() + 1);
-            List<Integer> guess = getNextCode(game.codeLength(), game.numColors());
-            Feedback feedback = game.processGuess(guess);
-            System.out.println(feedback);
+            return setUpGame();
         }
     }
 
@@ -72,5 +72,19 @@ public class MastermindCliApplication {
         }
 
         return nextMenu;
+    }
+
+    private static void play(Game game) {
+        System.out.printf("""
+                The secret code is %d digits long from 0 to %d
+                Enter your guess in one line, space separated
+                """, game.codeLength(), game.numColors() - 1);
+
+        while (!game.isGameWon() && (game.movesCompleted() < game.maxAttempts())) {
+            System.out.printf("\nRound %d%n", game.movesCompleted() + 1);
+            List<Integer> guess = getNextCode(game.codeLength(), game.numColors());
+            Feedback feedback = game.processGuess(guess);
+            System.out.println(feedback);
+        }
     }
 }

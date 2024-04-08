@@ -9,6 +9,10 @@ import java.util.stream.Stream;
 public class CliUtils {
     private static final Scanner scanner = new Scanner(System.in);
 
+    private CliUtils() {
+        throw new AssertionError("Utility class should not be instantiated."); // See Effective Java (3rd edition) Item 4
+    }
+
     public static int getIntegerChoiceFromSet(Set<Integer> allowedChoices) {
         return getIntegerMatchingCondition(allowedChoices::contains);
     }
@@ -54,5 +58,11 @@ public class CliUtils {
 
     public static boolean isCodeValid(List<Integer> possibleCode, int codeLength, int numColors) {
         return possibleCode.size() == codeLength && possibleCode.stream().allMatch(i -> i >= 0 && i < numColors);
+    }
+
+    // Based on ANSI escape codes. Will not work on IDE consoles. Might not work on Windows.
+    public static void clearScreen() {
+        System.out.print("\033[H\033[2J"); // \033[H moves the cursor to the top left corner, \033[2J clears the screen
+        System.out.flush();
     }
 }
