@@ -1,7 +1,8 @@
 package org.jmel.mastermind.cli;
 
-import org.jmel.mastermind.core.Feedback;
 import org.jmel.mastermind.core.Game;
+import org.jmel.mastermind.core.feedback.Feedback;
+import org.jmel.mastermind.core.feedback.FeedbackStrategy;
 import org.jmel.mastermind.core.secret_code_suppliers.CodeGenerationPreference;
 
 import java.io.IOException;
@@ -57,8 +58,10 @@ public class MastermindCliApplication {
             case SETTINGS_MAX_ATTEMPTS -> builder.maxAttempts(getIntegerValue());
             case SETTINGS_CODE_LENGTH -> builder.codeLength(getIntegerValue());
             case SETTINGS_NUM_COLORS -> builder.numColors(getIntegerValue());
-            case SETTINGS_FEEDBACK_PREFERENCE ->
-                    throw new UnsupportedOperationException("Feedback strategy not implemented yet"); // TODO: implement in Game builder
+            case SETTINGS_FEEDBACK_PREFERENCE -> {
+                FeedbackStrategy selected = feedbackStrategyMap.get(getIntegerChoiceFromSet(feedbackStrategyMap.keySet()));
+                builder.feedbackStrategy(selected);
+            }
             case SETTINGS_CODE_GENERATION_PREFERENCE -> {
                 CodeGenerationPreference preference = codeGenerationMap.get(getIntegerChoiceFromSet(codeGenerationMap.keySet()));
                 builder.codeGenerationPreference(preference);

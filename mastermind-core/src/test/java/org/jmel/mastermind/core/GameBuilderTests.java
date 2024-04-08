@@ -150,5 +150,12 @@ public class GameBuilderTests {
                     .codeLength(4)
                     .build());
         }
+
+        @Test
+        void buildGameWithInvalidFeedbackStrategy() {
+            assertThrows(IllegalArgumentException.class, () -> gameBuilder
+                    .feedbackStrategy(null)
+                    .build());
+        }
     }
 }

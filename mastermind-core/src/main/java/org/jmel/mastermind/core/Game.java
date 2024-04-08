@@ -1,12 +1,17 @@
 package org.jmel.mastermind.core;
 
-
+import org.jmel.mastermind.core.feedback.Feedback;
+import org.jmel.mastermind.core.feedback.FeedbackStrategy;
+import org.jmel.mastermind.core.feedback.FeedbackStrategyImpl;
 import org.jmel.mastermind.core.secret_code_suppliers.*;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
-import static org.jmel.mastermind.core.secret_code_suppliers.CodeGenerationPreference.*;
+import static org.jmel.mastermind.core.secret_code_suppliers.CodeGenerationPreference.RANDOM_ORG_API;
+import static org.jmel.mastermind.core.secret_code_suppliers.CodeGenerationPreference.USER_DEFINED;
 
 public class Game {
     private final int codeLength;
@@ -14,12 +19,14 @@ public class Game {
     private final int maxAttempts;
     private final Code secretCode;
     private final List<Code> guessHistory = new ArrayList<>();
+    private final FeedbackStrategy feedbackStrategy;
 
     private Game(Builder builder) {
         this.codeLength = builder.codeLength;
         this.numColors = builder.numColors;
         this.maxAttempts = builder.maxAttempts;
         this.secretCode = builder.secretCode;
+        this.feedbackStrategy = builder.feedbackStrategy;
     }
 
     public Feedback processGuess(List<Integer> guessInput) {
@@ -32,37 +39,13 @@ public class Game {
         Code guess = Code.from(guessInput, this.codeLength, this.numColors);
         guessHistory.add(guess);
 
-        return computeFeedback(this.secretCode, guess);
-    }
 
-    private Feedback computeFeedback(Code secretCode, Code guess) {
-        int wellPlaced = 0;
-        Map<Integer, Integer> secretFreq = new HashMap<>();
-        Map<Integer, Integer> guessFreq = new HashMap<>();
-
-        for (int i = 0; i < secretCode.value().size(); i++) {
-            int secretDigit = secretCode.value().get(i);
-            int guessDigit = guess.value().get(i);
-            if (secretDigit == guessDigit) {
-                wellPlaced++;
-            } else {
-                secretFreq.put(secretDigit, secretFreq.getOrDefault(secretDigit, 0) + 1);
-                guessFreq.put(guessDigit, guessFreq.getOrDefault(guessDigit, 0) + 1);
-            }
-        }
-
-        int misplaced = 0;
-        for (int digit : guessFreq.keySet()) {
-            int timesInGuess = guessFreq.get(digit);
-            int timesInSecret = secretFreq.getOrDefault(digit, 0);
-            misplaced += Math.min(timesInGuess, timesInSecret);
-        }
-
-        return new Feedback(wellPlaced, misplaced);
+        return feedbackStrategy.get(secretCode, guess);
     }
 
     public int movesCompleted() {
-        if (guessHistory.size() > maxAttempts) throw new IllegalStateException("Game in illegal state -- more moves than attempts");
+        if (guessHistory.size() > maxAttempts)
+            throw new IllegalStateException("Game in illegal state -- more moves than attempts");
 
         return guessHistory.size();
     }
@@ -87,8 +70,9 @@ public class Game {
         private int codeLength = 4;
         private int numColors = 8;
         private int maxAttempts = 10;
-        private CodeGenerationPreference codeGenerationPreference = RANDOM_ORG_API;
+        private CodeGenerationPreference codeSupplierPreference = RANDOM_ORG_API;
         private List<Integer> secretCodeInput; // Required for user defined secret code
+        private FeedbackStrategy feedbackStrategy = FeedbackStrategyImpl.DEFAULT;
         private Code secretCode;
 
         public Builder codeLength(int codeLength) {
@@ -112,9 +96,9 @@ public class Game {
             return this;
         }
 
-        public Builder codeGenerationPreference(CodeGenerationPreference preference) {
-            if (Objects.isNull(preference)) throw new IllegalArgumentException("Invalid code generation preference");
-            this.codeGenerationPreference = preference;
+        public Builder codeGenerationPreference(CodeGenerationPreference supplier) {
+            if (Objects.isNull(supplier)) throw new IllegalArgumentException("Invalid code generation preference");
+            this.codeSupplierPreference = supplier;
 
             return this;
         }
@@ -122,8 +106,15 @@ public class Game {
         public Builder secretCode(List<Integer> secretCode) {
             if (Objects.isNull(secretCode)) throw new IllegalArgumentException("Invalid secret code");
             this.secretCodeInput = secretCode;
-            this.codeGenerationPreference = USER_DEFINED;
+            this.codeSupplierPreference = USER_DEFINED;
             this.codeLength = secretCode.size();
+
+            return this;
+        }
+
+        public Builder feedbackStrategy(FeedbackStrategy strategy) {
+            if (Objects.isNull(strategy)) throw new IllegalArgumentException("Invalid feedback strategy preference");
+            this.feedbackStrategy = strategy;
 
             return this;
         }
@@ -136,16 +127,12 @@ public class Game {
             return numColors;
         }
 
-        public int getMaxAttempts() {
-            return maxAttempts;
-        }
-
         public Game build() throws IOException {
-            if (!codeGenerationPreference.equals(USER_DEFINED) && Objects.nonNull(secretCodeInput)) {
+            if (!codeSupplierPreference.equals(USER_DEFINED) && Objects.nonNull(secretCodeInput)) {
                 throw new IllegalArgumentException("Cannot specify a code with selected strategy");
             }
 
-            CodeSupplier codeSupplier = switch (this.codeGenerationPreference) {
+            CodeSupplier codeSupplier = switch (this.codeSupplierPreference) {
                 case RANDOM_ORG_API -> new ApiCodeSupplier(codeLength, numColors);
                 case LOCAL_RANDOM -> new LocalRandomCodeSupplier(codeLength, numColors);
                 case USER_DEFINED -> new UserDefinedCodeSupplier(Code.from(secretCodeInput, codeLength, numColors));
@@ -157,7 +144,7 @@ public class Game {
                 return new Game(this);
 
             } catch (IOException e) {
-                throw new IOException("Failed to supply code with " + codeGenerationPreference, e);
+                throw new IOException("Failed to supply code with " + codeSupplierPreference, e);
             }
         }
     }

@@ -1,6 +1,7 @@
 package org.jmel.mastermind.cli;
 
-import org.jmel.mastermind.core.feedback_strategy.FeedbackStrategyPreference;
+import org.jmel.mastermind.core.feedback.FeedbackStrategy;
+import org.jmel.mastermind.core.feedback.FeedbackStrategyImpl;
 import org.jmel.mastermind.core.secret_code_suppliers.CodeGenerationPreference;
 
 import java.util.HashMap;
@@ -35,10 +36,10 @@ public enum Menu {
             **  Feedback Strategy **
             ************************
             Choose one:
-            1. Standard Mastermind (default)
-            2. Only exact matches
-            3. Accuracy
-            4. Permutation"""), // changes here must be reflected in feedbackStrategyMap
+            1. Default
+            2. Original Mastermind
+            3. Higher/Lower
+            4. Perfect"""), // changes here must be reflected in feedbackStrategyMap
     SETTINGS_CODE_GENERATION_PREFERENCE("""
             ************************
             **   Code Supplier    **
@@ -52,26 +53,16 @@ public enum Menu {
     SETTINGS_CODE_LENGTH("Enter code length: "),
     SETTINGS_NUM_COLORS("Enter number of colors: ");
 
-    private final String displayString;
-
-    Menu(String displayString) {
-        this.displayString = displayString;
-    }
-
-    @Override
-    public String toString() {
-        return displayString;
-    }
-
     // Every menu must be either a navigational menu or an input collection menu, but not both
     public static final Map<Menu, Map<Integer, Menu>> navigationalMenu = new HashMap<>();
+    public static final Map<Menu, Menu> inputCollectionMenu = new HashMap<>();
+    public static final Map<Integer, CodeGenerationPreference> codeGenerationMap = new HashMap<>();
+    public static final Map<Integer, FeedbackStrategy> feedbackStrategyMap = new HashMap<>();
 
     static {
         navigationalMenu.put(MAIN_MENU, Map.of(0, EXIT, 1, PLAY, 2, SETTINGS_MAIN));
         navigationalMenu.put(SETTINGS_MAIN, Map.of(0, MAIN_MENU, 1, SETTINGS_MAX_ATTEMPTS, 2, SETTINGS_CODE_LENGTH, 3, SETTINGS_NUM_COLORS, 4, SETTINGS_CODE_GENERATION_PREFERENCE, 5, SETTINGS_FEEDBACK_PREFERENCE));
     }
-
-    public static final Map<Menu, Menu> inputCollectionMenu = new HashMap<>();
 
     static {
         inputCollectionMenu.put(SETTINGS_CODE_LENGTH, SETTINGS_MAIN);
@@ -82,17 +73,27 @@ public enum Menu {
         inputCollectionMenu.put(SETTINGS_FEEDBACK_PREFERENCE, SETTINGS_MAIN);
     }
 
-    public static final Map<Integer, CodeGenerationPreference> codeGenerationMap = new HashMap<>();
-
     static {
         codeGenerationMap.put(1, CodeGenerationPreference.RANDOM_ORG_API);
         codeGenerationMap.put(2, CodeGenerationPreference.LOCAL_RANDOM);
         codeGenerationMap.put(3, CodeGenerationPreference.USER_DEFINED);
     }
 
-    public static final Map<Integer, FeedbackStrategyPreference> feedbackStrategyMap = new HashMap<>();
-
     static {
-        feedbackStrategyMap.put(1, FeedbackStrategyPreference.STANDARD); // TODO: update when FeedbackStrategyPreference has more options
+        feedbackStrategyMap.put(1, FeedbackStrategyImpl.DEFAULT);
+        feedbackStrategyMap.put(2, FeedbackStrategyImpl.ORIGINAL_MASTERMIND);
+        feedbackStrategyMap.put(3, FeedbackStrategyImpl.HIGHER_LOWER);
+        feedbackStrategyMap.put(4, FeedbackStrategyImpl.PERFECT);
+    }
+
+    private final String displayString;
+
+    Menu(String displayString) {
+        this.displayString = displayString;
+    }
+
+    @Override
+    public String toString() {
+        return displayString;
     }
 }
