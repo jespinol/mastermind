@@ -34,8 +34,8 @@ public class GameTests {
         game.processGuess(correctGuess);
 
         assertAll(
-                () -> assertEquals(game.getMovesLeft(), MAX_ATTEMPTS - 1),
-                () -> assertTrue(game.isGameOver())
+                () -> assertEquals(game.getMovesCompleted(), MAX_ATTEMPTS - 1),
+                () -> assertTrue(game.isGameWon())
         );
     }
 
@@ -43,10 +43,10 @@ public class GameTests {
     @Test
     void gameEndsCorrectly() {
         game.processGuess(incorrectGuess);
-        assertFalse(game.isGameOver());
+        assertFalse(game.isGameWon());
 
         game.processGuess(correctGuess);
-        assertTrue(game.isGameOver());
+        assertTrue(game.isGameWon());
     }
 
     @DisplayName("Player can make 10 incorrect guesses and no more.")
@@ -58,8 +58,8 @@ public class GameTests {
 
         assertAll(
                 () -> assertThrows(IllegalStateException.class, () -> game.processGuess(incorrectGuess)),
-                () -> assertEquals(game.getMovesLeft(), 0),
-                () -> assertTrue(game.isGameOver()));
+                () -> assertEquals(game.getMovesCompleted(), 0),
+                () -> assertTrue(game.isGameWon()));
     }
 
     @DisplayName("Feedback is computed correctly for a correct guess")

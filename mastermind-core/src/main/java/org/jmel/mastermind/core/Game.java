@@ -6,8 +6,7 @@ import org.jmel.mastermind.core.secret_code_suppliers.*;
 import java.io.IOException;
 import java.util.*;
 
-import static org.jmel.mastermind.core.secret_code_suppliers.CodeGenerationPreference.RANDOM_ORG_API;
-import static org.jmel.mastermind.core.secret_code_suppliers.CodeGenerationPreference.USER_DEFINED;
+import static org.jmel.mastermind.core.secret_code_suppliers.CodeGenerationPreference.*;
 
 public class Game {
     private final int codeLength;
@@ -24,18 +23,16 @@ public class Game {
     }
 
     public Feedback processGuess(List<Integer> guessInput) {
-        if (isGameOver()) {
-            throw new IllegalStateException("Max attempts reached");
-        }
+        if (isGameWon())
+            throw new IllegalStateException("Game already won!");
+
+        if (getMovesCompleted() == maxAttempts)
+            throw new IllegalStateException("Game is over. Cannot make more guesses.");
 
         Code guess = Code.from(guessInput, this.codeLength, this.numColors);
         guessHistory.add(guess);
 
         return computeFeedback(this.secretCode, guess);
-    }
-
-    public int getMovesLeft() {
-        return maxAttempts - guessHistory.size();
     }
 
     private Feedback computeFeedback(Code secretCode, Code guess) {
@@ -64,10 +61,14 @@ public class Game {
         return new Feedback(wellPlaced, misplaced);
     }
 
-    public boolean isGameOver() {
-        boolean wonGame = !guessHistory.isEmpty() && Objects.equals(guessHistory.get(guessHistory.size() - 1), secretCode);
+    public int getMovesCompleted() {
+        if (guessHistory.size() > maxAttempts) throw new IllegalStateException("Game in illegal state -- more moves than attempts");
 
-        return wonGame || getMovesLeft() == 0; // TODO ensure movesLeft can't be negative
+        return guessHistory.size();
+    }
+
+    public boolean isGameWon() {
+        return !guessHistory.isEmpty() && Objects.equals(guessHistory.get(guessHistory.size() - 1), secretCode);
     }
 
     public static class Builder {
@@ -113,6 +114,18 @@ public class Game {
             this.codeLength = secretCode.size();
 
             return this;
+        }
+
+        public int getCodeLength() {
+            return codeLength;
+        }
+
+        public int getNumColors() {
+            return numColors;
+        }
+
+        public int getMaxAttempts() {
+            return maxAttempts;
         }
 
         public Game build() throws IOException {
