@@ -8,7 +8,7 @@ public class Code {
     private final List<Integer> value;
 
     private Code(List<Integer> value) {
-        this.value = Collections.unmodifiableList(value);
+        this.value = List.copyOf(value);
     }
 
     public static Code from(List<Integer> possibleCode, int codeLength, int numColors) {

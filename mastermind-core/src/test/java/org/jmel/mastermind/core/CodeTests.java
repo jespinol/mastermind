@@ -8,10 +8,12 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import static org.jmel.mastermind.core.secret_code_suppliers.CodeGenerationPreference.LOCAL_RANDOM;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CodeTests {
@@ -57,6 +59,34 @@ public class CodeTests {
         void codeWithEmptyGuess() {
 
             assertThrows(IllegalArgumentException.class, () -> game.processGuess(Collections.emptyList()));
+        }
+
+        @Test
+        void clientCannotAddToCode() {
+            List<Integer> codeValue = List.of(1, 2, 3, 4);
+            Code secretCode = Code.from(codeValue, 4, 8);
+
+            assertThrows(UnsupportedOperationException.class, () -> secretCode.value().add(5));
+        }
+
+        @Test
+        void clientCannotModifyDigitInCode() {
+            List<Integer> codeValue = new ArrayList<>(List.of(1, 2, 3, 4));
+            Code secretCode = Code.from(codeValue, 4, 8);
+
+            assertThrows(UnsupportedOperationException.class, () -> secretCode.value().set(0, 5));
+        }
+
+        @Test
+        void modifyingOriginalListDoesntChangeCode() {
+            List<Integer> codeValue = new ArrayList<>(List.of(1,2,3,4)); // codeValue is mutable
+            Code secretCode = Code.from(codeValue, 4, 8);
+
+            List<Integer> oldValue = secretCode.value();
+            codeValue.set(0, 5);
+            List<Integer> newValue = secretCode.value();
+
+            assertEquals(newValue, oldValue);
         }
     }
 
