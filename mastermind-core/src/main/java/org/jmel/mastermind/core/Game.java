@@ -26,7 +26,7 @@ public class Game {
         if (isGameWon())
             throw new IllegalStateException("Game already won!");
 
-        if (getMovesCompleted() == maxAttempts)
+        if (movesCompleted() == maxAttempts)
             throw new IllegalStateException("Game is over. Cannot make more guesses.");
 
         Code guess = Code.from(guessInput, this.codeLength, this.numColors);
@@ -61,7 +61,7 @@ public class Game {
         return new Feedback(wellPlaced, misplaced);
     }
 
-    public int getMovesCompleted() {
+    public int movesCompleted() {
         if (guessHistory.size() > maxAttempts) throw new IllegalStateException("Game in illegal state -- more moves than attempts");
 
         return guessHistory.size();
@@ -69,6 +69,18 @@ public class Game {
 
     public boolean isGameWon() {
         return !guessHistory.isEmpty() && Objects.equals(guessHistory.get(guessHistory.size() - 1), secretCode);
+    }
+
+    public int codeLength() {
+        return this.codeLength;
+    }
+
+    public int numColors() {
+        return this.numColors;
+    }
+
+    public int maxAttempts() {
+        return this.maxAttempts;
     }
 
     public static class Builder {

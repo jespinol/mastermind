@@ -34,7 +34,7 @@ public class GameTests {
         game.processGuess(correctGuess);
 
         assertAll(
-                () -> assertEquals(game.getMovesCompleted(), MAX_ATTEMPTS - 1),
+                () -> assertEquals(game.movesCompleted(), MAX_ATTEMPTS - 1),
                 () -> assertTrue(game.isGameWon())
         );
     }
@@ -58,7 +58,7 @@ public class GameTests {
 
         assertAll(
                 () -> assertThrows(IllegalStateException.class, () -> game.processGuess(incorrectGuess)),
-                () -> assertEquals(game.getMovesCompleted(), 0),
+                () -> assertEquals(game.movesCompleted(), 0),
                 () -> assertTrue(game.isGameWon()));
     }
 

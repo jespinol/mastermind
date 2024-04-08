@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum Menu {
+    EXIT("\nGoodBye!"),
+    PLAY("\nStart!"),
     MAIN_MENU("""
             #############################
             ##                         ##
@@ -16,7 +18,7 @@ public enum Menu {
             Choose one:
             1. Play
             2. Settings
-            0. Quit""", 3),
+            0. Quit"""), // changes here must be reflected in navigationalMenu
     SETTINGS_MAIN("""
             ************************
             **      Settings      **
@@ -27,11 +29,8 @@ public enum Menu {
             3. Number of colors
             4. Secret code supplier
             5. Feedback strategy
-            0. Back""", 6),
-    SETTINGS_ATTEMPTS("Enter max attempts: ", 0),
-    SETTINGS_LENGTH("Enter code length: ", 0),
-    SETTINGS_COLORS("Enter number of colors: ", 0),
-    SETTINGS_FEEDBACK("""
+            0. Back"""), // changes here must be reflected in navigationalMenu
+    SETTINGS_FEEDBACK_PREFERENCE("""
             ************************
             **  Feedback Strategy **
             ************************
@@ -39,55 +38,52 @@ public enum Menu {
             1. Standard Mastermind (default)
             2. Only exact matches
             3. Accuracy
-            4. Permutation
-            0. Back""", 5),
-    SETTINGS_CODE("""
+            4. Permutation"""), // changes here must be reflected in feedbackStrategyMap
+    SETTINGS_CODE_GENERATION_PREFERENCE("""
             ************************
             **   Code Provider    **
             ************************
             Choose one:
             1. Random.org API (default)
             2. Local random
-            3. User defined
-            0. Back""", 4),
-    SETTINGS_CODE_USER("Enter secret code: ", 0),
-    EXIT("\nGoodBye!", 0),
-    PLAY("\nStart!", 0);
+            3. User defined"""), // changes here must be reflected in codeGenerationMap
+    SETTINGS_CODE_USER_DEFINED("Enter secret code: "),
+    SETTINGS_MAX_ATTEMPTS("Enter max attempts: "),
+    SETTINGS_CODE_LENGTH("Enter code length: "),
+    SETTINGS_NUM_COLORS("Enter number of colors: ");
 
-    private final String view;
-    private final int numChoices;
+    private final String displayString;
 
-    Menu(String view, int numChoices) {
-        this.view = view;
-        this.numChoices = numChoices;
+    Menu(String displayString) {
+        this.displayString = displayString;
     }
 
-    /* TODO: refactor to use these maps, maybe use:
-    public static final Map<Menu, Map<Integer,Menu>> navigationalMenu; // contains Main, Setting; integer that isn't a key isn't a valid choice for that menu; these also require no invisible side effects
-    public static final Map<Menu, Menu> inputCollectionMenu; // contains all others; (remove "Back" from SETTINGS_FEEDBACK, SETTINGS_CODE to emphasize these are _not_ navigational
-        // these ones all require some action (or actions) to be taken after collecting user input
-        // e.g., from userCode menu, set user defined supplier then secretCode
-        // e.g. from numColors menu, set numColors
-     */
-
-    public static final Map<Menu, Map<Integer, Menu>> menuMap = new HashMap<>();
-
-    static {
-        menuMap.put(MAIN_MENU, Map.of(0, EXIT, 1, PLAY, 2, SETTINGS_MAIN));
-        menuMap.put(SETTINGS_MAIN, Map.of(0, MAIN_MENU, 1, SETTINGS_ATTEMPTS, 2, SETTINGS_LENGTH, 3, SETTINGS_COLORS, 4, SETTINGS_CODE, 5, SETTINGS_FEEDBACK));
+    @Override
+    public String toString() {
+        return displayString;
     }
 
-    public static final Map<Menu, Menu> menuSelectionMapping = new HashMap<>();
+    // Every menu must be either a navigational menu or an input collection menu, but not both
+    public static final Map<Menu, Map<Integer, Menu>> navigationalMenu = new HashMap<>();
 
     static {
-        menuSelectionMapping.put(SETTINGS_CODE_USER, SETTINGS_MAIN);
-        menuSelectionMapping.put(SETTINGS_LENGTH, SETTINGS_MAIN);
-        menuSelectionMapping.put(SETTINGS_COLORS, SETTINGS_MAIN);
-        menuSelectionMapping.put(SETTINGS_ATTEMPTS, SETTINGS_MAIN);
-        menuSelectionMapping.put(SETTINGS_FEEDBACK, SETTINGS_MAIN);
+        navigationalMenu.put(MAIN_MENU, Map.of(0, EXIT, 1, PLAY, 2, SETTINGS_MAIN));
+        navigationalMenu.put(SETTINGS_MAIN, Map.of(0, MAIN_MENU, 1, SETTINGS_MAX_ATTEMPTS, 2, SETTINGS_CODE_LENGTH, 3, SETTINGS_NUM_COLORS, 4, SETTINGS_CODE_GENERATION_PREFERENCE, 5, SETTINGS_FEEDBACK_PREFERENCE));
+    }
+
+    public static final Map<Menu, Menu> inputCollectionMenu = new HashMap<>();
+
+    static {
+        inputCollectionMenu.put(SETTINGS_CODE_LENGTH, SETTINGS_MAIN);
+        inputCollectionMenu.put(SETTINGS_NUM_COLORS, SETTINGS_MAIN);
+        inputCollectionMenu.put(SETTINGS_MAX_ATTEMPTS, SETTINGS_MAIN);
+        inputCollectionMenu.put(SETTINGS_CODE_GENERATION_PREFERENCE, SETTINGS_MAIN);
+        inputCollectionMenu.put(SETTINGS_CODE_USER_DEFINED, SETTINGS_MAIN);
+        inputCollectionMenu.put(SETTINGS_FEEDBACK_PREFERENCE, SETTINGS_MAIN);
     }
 
     public static final Map<Integer, CodeGenerationPreference> codeGenerationMap = new HashMap<>();
+
     static {
         codeGenerationMap.put(1, CodeGenerationPreference.RANDOM_ORG_API);
         codeGenerationMap.put(2, CodeGenerationPreference.LOCAL_RANDOM);
@@ -95,20 +91,8 @@ public enum Menu {
     }
 
     public static final Map<Integer, FeedbackStrategyPreference> feedbackStrategyMap = new HashMap<>();
+
     static {
-        feedbackStrategyMap.put(1, FeedbackStrategyPreference.STANDARD);
+        feedbackStrategyMap.put(1, FeedbackStrategyPreference.STANDARD); // TODO: update when FeedbackStrategyPreference has more options
     }
-
-    public static boolean isIntegerEntryMenu(Menu menu) {
-        return menu == SETTINGS_LENGTH || menu == SETTINGS_COLORS || menu == SETTINGS_ATTEMPTS;
-    }
-
-    public String view() {
-        return view;
-    }
-
-    public int numChoices() {
-        return numChoices;
-    }
-
 }

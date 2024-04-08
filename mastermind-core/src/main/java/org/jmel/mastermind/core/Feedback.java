@@ -19,6 +19,6 @@ public class Feedback {
 
     @Override
     public String toString() {
-        return "wellPlaced=" + wellPlaced + ", misplaced=" + misplaced;
+        return String.format("%d correctly placed, %d misplaced", wellPlaced, misplaced);
     }
 }
