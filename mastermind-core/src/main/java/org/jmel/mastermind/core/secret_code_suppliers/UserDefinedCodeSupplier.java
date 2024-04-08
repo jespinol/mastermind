@@ -1,6 +1,5 @@
 package org.jmel.mastermind.core.secret_code_suppliers;
 
-
 import org.jmel.mastermind.core.Code;
 
 public class UserDefinedCodeSupplier implements CodeSupplier {

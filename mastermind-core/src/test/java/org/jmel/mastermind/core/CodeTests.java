@@ -1,8 +1,9 @@
 package org.jmel.mastermind.core;
 
-
+import org.jmel.mastermind.core.secret_code_suppliers.ApiCodeSupplier;
 import org.jmel.mastermind.core.secret_code_suppliers.CodeSupplier;
-import org.jmel.mastermind.core.secret_code_suppliers.*;
+import org.jmel.mastermind.core.secret_code_suppliers.LocalRandomCodeSupplier;
+import org.jmel.mastermind.core.secret_code_suppliers.UserDefinedCodeSupplier;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -79,7 +80,7 @@ public class CodeTests {
 
         @Test
         void modifyingOriginalListDoesntChangeCode() {
-            List<Integer> codeValue = new ArrayList<>(List.of(1,2,3,4)); // codeValue is mutable
+            List<Integer> codeValue = new ArrayList<>(List.of(1, 2, 3, 4)); // codeValue is mutable
             Code secretCode = Code.from(codeValue, 4, 8);
 
             List<Integer> oldValue = secretCode.value();
