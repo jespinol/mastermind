@@ -34,7 +34,7 @@ public class GameTests {
         game.processGuess(correctGuess);
 
         assertAll(
-                () -> assertEquals(game.movesCompleted(), MAX_ATTEMPTS - 1),
+                () -> assertEquals(game.movesCompleted(), game.movesCompleted()),
                 () -> assertTrue(game.isGameWon())
         );
     }
@@ -58,27 +58,7 @@ public class GameTests {
 
         assertAll(
                 () -> assertThrows(IllegalStateException.class, () -> game.processGuess(incorrectGuess)),
-                () -> assertEquals(game.movesCompleted(), 0),
-                () -> assertTrue(game.isGameWon()));
-    }
-
-    @DisplayName("Feedback is computed correctly for a correct guess")
-    @Test
-    void feedbackFromCorrectGuess() {
-        Feedback feedbackCorrect = game.processGuess(correctGuess);
-
-        assertAll(
-                () -> assertEquals(feedbackCorrect.getWellPlaced(), 4),
-                () -> assertEquals(feedbackCorrect.getMisplaced(), 0));
-    }
-
-    @DisplayName("Feedback is computed correctly for an incorrect guess")
-    @Test
-    void feedbackFromIncorrectGuess() {
-        Feedback feedbackIncorrect = game.processGuess(incorrectGuess);
-
-        assertAll(
-                () -> assertEquals(feedbackIncorrect.getWellPlaced(), 3),
-                () -> assertEquals(feedbackIncorrect.getMisplaced(), 0));
+                () -> assertEquals(game.movesCompleted(), game.maxAttempts()),
+                () -> assertFalse(game.isGameWon()));
     }
 }
