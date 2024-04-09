@@ -11,8 +11,8 @@
     <name>Mastermind REACH</name>
 
     <modules>
-        <module>mastermind-core</module>
-        <module>mastermind-cli</module>
+        <module>mastermindcore</module>
+        <module>mastermindcli</module>
     </modules>
 
     <build>
