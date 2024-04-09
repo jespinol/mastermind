@@ -4,8 +4,11 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Represents a Mastermind code which could be a secret code or a guess.
- * The value of a code is represented by a list of integers that has a certain length and each integer represents one of several allowed color. These constraints are defined by the game configuration and will match the constraints of the secret code.
+ * Represents a Mastermind code which could be a secret code or a guess. The value of a code is represented by a list of
+ * integers that has a certain length. Each integer represents one of several allowed colors in the range of 0 to
+ * numColors (exclusive). While Mastermind Core only represents the components of a code as Integers, these can be
+ * easily mapped to any desired symbol client side (for example, 0 can be mapped to 'A' or '*' or any other
+ * symbol).These constraints are specified in Game.Builder and will match the constraints of the secret code.
  */
 public class Code {
     private final List<Integer> value;

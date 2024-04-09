@@ -13,8 +13,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * A code supplier that uses the random.org API to generate a random code of a given length where each code element is one of the allowed colors.
- * It uses the free tier API which allows up to 1,000,000 bits per day per IP address.
+ * A code supplier that uses the random.org API to generate a random code of a given length where each code element is
+ * one of the allowed colors. It uses the free tier API which allows up to 1,000,000 bits per day per IP address.
  */
 public class ApiCodeSupplier implements CodeSupplier {
     private static final String QUOTA_URI = "https://www.random.org/quota/?format=plain";
@@ -52,7 +52,7 @@ public class ApiCodeSupplier implements CodeSupplier {
 
     private HttpClient buildHttpClient() {
         return HttpClient.newBuilder()
-                .connectTimeout(Duration.ofSeconds(1))
+                .connectTimeout(Duration.ofSeconds(2))
                 .build();
     }
 
@@ -60,15 +60,16 @@ public class ApiCodeSupplier implements CodeSupplier {
         try {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(QUOTA_URI))
-                    .timeout(Duration.ofSeconds(1))
+                    .timeout(Duration.ofSeconds(2))
                     .build();
 
             String quota = client.send(request, HttpResponse.BodyHandlers.ofString())
                     .body()
                     .trim();
 
-            // TODO: fix use the number of bits using base 2 log. e.g., a request for 4 integers from 0 to 7 costs 4*3 = 12 bits.
-            return Integer.parseInt(quota) >= this.codeLength * 4;
+            int bitsNeeded = this.codeLength * (int) (Math.log(this.numColors - 1) / Math.log(2) + 1);
+
+            return Integer.parseInt(quota) >= bitsNeeded * 10;
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
