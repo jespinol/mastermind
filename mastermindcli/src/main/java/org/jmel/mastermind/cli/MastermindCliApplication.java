@@ -1,16 +1,16 @@
 package org.jmel.mastermind.cli;
 
 import org.jmel.mastermind.core.Game;
-import org.jmel.mastermind.core.feedback.Feedback;
-import org.jmel.mastermind.core.feedback.FeedbackStrategy;
-import org.jmel.mastermind.core.secret_code_suppliers.CodeSupplierPreference;
+import org.jmel.mastermind.core.feedbackstrategy.Feedback;
+import org.jmel.mastermind.core.feedbackstrategy.FeedbackStrategy;
+import org.jmel.mastermind.core.secretcodesupplier.CodeSupplierPreference;
 
 import java.io.IOException;
 import java.util.List;
 
 import static org.jmel.mastermind.cli.CliUtils.*;
 import static org.jmel.mastermind.cli.Menu.*;
-import static org.jmel.mastermind.core.secret_code_suppliers.CodeSupplierPreference.USER_DEFINED;
+import static org.jmel.mastermind.core.secretcodesupplier.CodeSupplierPreference.USER_DEFINED;
 
 public class MastermindCliApplication {
     private static Menu currentMenu = MAIN_MENU;
@@ -37,7 +37,7 @@ public class MastermindCliApplication {
         } catch (IOException e) {
             System.out.println("Error creating game: " + e.getMessage());
             System.out.println("Please select a different code supplier");
-            currentMenu = SETTINGS_CODE_GENERATION_PREFERENCE; // TODO: make this a custom menu maybe
+            currentMenu = SETTINGS_CODE_GENERATION_PREFERENCE; // TODO: make this a custom menu to differentiate fallback from original choice
 
             return setUpGame();
         }
@@ -85,9 +85,20 @@ public class MastermindCliApplication {
 
         while (!game.isGameWon() && (game.movesCompleted() < game.maxAttempts())) {
             System.out.printf("\nRound %d%n", game.movesCompleted() + 1);
+
             List<Integer> guess = getNextCode(game.codeLength(), game.numColors());
             Feedback feedback = game.processGuess(guess);
             System.out.println(feedback);
+        }
+
+        printEndOfGameMessage(game);
+    }
+
+    private static void printEndOfGameMessage(Game game) {
+        if (game.isGameWon()) {
+            System.out.println("\nCongratulations! You won!\n");
+        } else {
+            System.out.println("\nGame over! Try again\n");
         }
     }
 }
