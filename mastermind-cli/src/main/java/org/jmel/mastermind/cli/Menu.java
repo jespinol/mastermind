@@ -2,7 +2,7 @@ package org.jmel.mastermind.cli;
 
 import org.jmel.mastermind.core.feedback.FeedbackStrategy;
 import org.jmel.mastermind.core.feedback.FeedbackStrategyImpl;
-import org.jmel.mastermind.core.secret_code_suppliers.CodeGenerationPreference;
+import org.jmel.mastermind.core.secret_code_suppliers.CodeSupplierPreference;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -56,7 +56,7 @@ public enum Menu {
     // Every menu must be either a navigational menu or an input collection menu, but not both
     public static final Map<Menu, Map<Integer, Menu>> navigationalMenu = new HashMap<>();
     public static final Map<Menu, Menu> inputCollectionMenu = new HashMap<>();
-    public static final Map<Integer, CodeGenerationPreference> codeGenerationMap = new HashMap<>();
+    public static final Map<Integer, CodeSupplierPreference> codeGenerationMap = new HashMap<>();
     public static final Map<Integer, FeedbackStrategy> feedbackStrategyMap = new HashMap<>();
 
     static {
@@ -74,9 +74,9 @@ public enum Menu {
     }
 
     static {
-        codeGenerationMap.put(1, CodeGenerationPreference.RANDOM_ORG_API);
-        codeGenerationMap.put(2, CodeGenerationPreference.LOCAL_RANDOM);
-        codeGenerationMap.put(3, CodeGenerationPreference.USER_DEFINED);
+        codeGenerationMap.put(1, CodeSupplierPreference.RANDOM_ORG_API);
+        codeGenerationMap.put(2, CodeSupplierPreference.LOCAL_RANDOM);
+        codeGenerationMap.put(3, CodeSupplierPreference.USER_DEFINED);
     }
 
     static {

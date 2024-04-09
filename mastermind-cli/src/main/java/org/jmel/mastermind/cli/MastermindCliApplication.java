@@ -3,14 +3,14 @@ package org.jmel.mastermind.cli;
 import org.jmel.mastermind.core.Game;
 import org.jmel.mastermind.core.feedback.Feedback;
 import org.jmel.mastermind.core.feedback.FeedbackStrategy;
-import org.jmel.mastermind.core.secret_code_suppliers.CodeGenerationPreference;
+import org.jmel.mastermind.core.secret_code_suppliers.CodeSupplierPreference;
 
 import java.io.IOException;
 import java.util.List;
 
 import static org.jmel.mastermind.cli.CliUtils.*;
 import static org.jmel.mastermind.cli.Menu.*;
-import static org.jmel.mastermind.core.secret_code_suppliers.CodeGenerationPreference.USER_DEFINED;
+import static org.jmel.mastermind.core.secret_code_suppliers.CodeSupplierPreference.USER_DEFINED;
 
 public class MastermindCliApplication {
     private static Menu currentMenu = MAIN_MENU;
@@ -63,12 +63,12 @@ public class MastermindCliApplication {
                 builder.feedbackStrategy(selected);
             }
             case SETTINGS_CODE_GENERATION_PREFERENCE -> {
-                CodeGenerationPreference preference = codeGenerationMap.get(getIntegerChoiceFromSet(codeGenerationMap.keySet()));
-                builder.codeGenerationPreference(preference);
+                CodeSupplierPreference preference = codeGenerationMap.get(getIntegerChoiceFromSet(codeGenerationMap.keySet()));
+                builder.codeSupplierPreference(preference);
                 if (preference == USER_DEFINED) nextMenu = SETTINGS_CODE_USER_DEFINED;
             }
             case SETTINGS_CODE_USER_DEFINED -> {
-                List<Integer> secretCode = getNextCode(builder.getCodeLength(), builder.getNumColors());
+                List<Integer> secretCode = getNextCode(builder.codeLength(), builder.numColors());
                 builder.secretCode(secretCode);
             }
             default -> throw new IllegalStateException("Unexpected value: " + currentMenu);

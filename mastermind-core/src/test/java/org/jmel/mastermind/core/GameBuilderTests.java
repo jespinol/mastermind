@@ -1,15 +1,13 @@
 package org.jmel.mastermind.core;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-import static org.jmel.mastermind.core.secret_code_suppliers.CodeGenerationPreference.*;
+import static org.jmel.mastermind.core.secret_code_suppliers.CodeSupplierPreference.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class GameBuilderTests {
@@ -29,15 +27,15 @@ public class GameBuilderTests {
         }
 
         @Test
+        void canBuildAGameWithDefaultValues() {
+        }
+
+        @Test
         void canBuildAGameWithCustomValues() {
             gameBuilder
                     .numColors(9)
                     .codeLength(5)
                     .maxAttempts(11);
-        }
-
-        @Test
-        void canBuildAGameWithDefaultValues() {
         }
 
         @Test
@@ -62,9 +60,11 @@ public class GameBuilderTests {
         @Test
         void canOverrideCodeSupplierByProvidingCode() {
             gameBuilder
-                    .codeGenerationPreference(LOCAL_RANDOM)
+                    .codeSupplierPreference(LOCAL_RANDOM)
                     .secretCode(List.of(1, 1, 1, 1));
+            assertEquals(USER_DEFINED, gameBuilder.codeSupplierPreference());
         }
+
     }
 
     @Nested
@@ -79,7 +79,7 @@ public class GameBuilderTests {
         @Test
         void buildGameWithUserDefinedStrategyButNoSecretCode() {
             assertThrows(IllegalArgumentException.class, () -> gameBuilder
-                    .codeGenerationPreference(USER_DEFINED)
+                    .codeSupplierPreference(USER_DEFINED)
                     .build());
         }
 
@@ -87,7 +87,7 @@ public class GameBuilderTests {
         void buildGameWithRandomStrategyAndSecretCode() {
             assertThrows(IllegalArgumentException.class, () -> gameBuilder
                     .secretCode(List.of(1, 1, 1, 1))
-                    .codeGenerationPreference(RANDOM_ORG_API)
+                    .codeSupplierPreference(RANDOM_ORG_API)
                     .build());
         }
 
@@ -113,9 +113,9 @@ public class GameBuilderTests {
         }
 
         @Test
-        void buildGameWithInvalidStrategy() {
+        void buildGameWithNullStrategy() {
             assertThrows(IllegalArgumentException.class, () -> gameBuilder
-                    .codeGenerationPreference(null)
+                    .codeSupplierPreference(null)
                     .build());
         }
 
@@ -125,6 +125,14 @@ public class GameBuilderTests {
                     .secretCode(List.of(1))
                     .numColors(1)
                     .build());
+        }
+
+        @Test
+        @Disabled
+        void buildGameWithOneColor() throws IOException {
+            gameBuilder
+                    .numColors(1)
+                    .build(); // TODO: This throws an exception because Random.org API is used and the user specified only one color. Could check in builder
         }
 
         @Test
@@ -152,7 +160,7 @@ public class GameBuilderTests {
         }
 
         @Test
-        void buildGameWithInvalidFeedbackStrategy() {
+        void buildGameWithNullFeedbackStrategy() {
             assertThrows(IllegalArgumentException.class, () -> gameBuilder
                     .feedbackStrategy(null)
                     .build());

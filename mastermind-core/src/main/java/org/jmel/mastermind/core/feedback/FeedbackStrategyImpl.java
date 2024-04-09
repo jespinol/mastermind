@@ -7,7 +7,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * An enumeration of implemented feedback strategies to provide feedback for a guess.
+ */
 public enum FeedbackStrategyImpl implements FeedbackStrategy {
+    /**
+     * A feedback strategy that provides the number of perfect matches and color matches.
+     */
     DEFAULT {
         @Override
         public DefaultFeedback get(Code secretCode, Code guess) {
@@ -17,6 +23,9 @@ public enum FeedbackStrategyImpl implements FeedbackStrategy {
             return new DefaultFeedback(correctPos, correctNum);
         }
     },
+    /**
+     * A feedback strategy that provides the number of well-placed and misplaced matches.
+     */
     ORIGINAL_MASTERMIND {
         @Override
         public OriginalMastermindFeedback get(Code secretCode, Code guess) {
@@ -26,6 +35,9 @@ public enum FeedbackStrategyImpl implements FeedbackStrategy {
             return new OriginalMastermindFeedback(wellPlaced, misplaced);
         }
     },
+    /**
+     * A feedback strategy that provides higher, lower, or equal information for each position in the guess.
+     */
     HIGHER_LOWER {
         @Override
         public HigherLowerFeedback get(Code secretCode, Code guess) {
@@ -45,6 +57,9 @@ public enum FeedbackStrategyImpl implements FeedbackStrategy {
             return new HigherLowerFeedback(scores);
         }
     },
+    /**
+     * A feedback strategy that provides only the number of perfect matches.
+     */
     PERFECT {
         @Override
         public PerfectFeedback get(Code secretCode, Code guess) {

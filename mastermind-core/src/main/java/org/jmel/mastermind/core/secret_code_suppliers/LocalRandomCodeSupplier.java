@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * A code supplier that uses java.util.Random to generate a random code of a given length where each code element is one of the allowed colors.
+ */
 public class LocalRandomCodeSupplier implements CodeSupplier {
     private final int codeLength;
     private final int numColors;

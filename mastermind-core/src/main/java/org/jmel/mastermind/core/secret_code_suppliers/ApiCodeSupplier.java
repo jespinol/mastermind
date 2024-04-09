@@ -12,6 +12,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * A code supplier that uses the random.org API to generate a random code of a given length where each code element is one of the allowed colors.
+ * It uses the free tier API which allows up to 1,000,000 bits per day per IP address.
+ */
 public class ApiCodeSupplier implements CodeSupplier {
     private static final String QUOTA_URI = "https://www.random.org/quota/?format=plain";
     private static final String INTS_URI = "https://www.random.org/integers/?num=%d&min=%d&max=%d&col=1&base=10&format=plain&rnd=new";
@@ -23,6 +27,12 @@ public class ApiCodeSupplier implements CodeSupplier {
         this.numColors = numColors;
     }
 
+    /**
+     * Gets a random code from the random.org API.
+     *
+     * @return a Code object
+     * @throws IOException if the API request fails or the quota is exceeded
+     */
     @Override
     public Code get() throws IOException {
         try {

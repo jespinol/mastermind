@@ -28,18 +28,18 @@ public class GameTests {
                 .build();
     }
 
-    @DisplayName("Game can be played with correct guess. Game.isGameOver() returns true after exactly one guess.")
+    @DisplayName("Game can be played with correct guess. Game.isGameWon() returns true after exactly one guess.")
     @Test
     void winGameInOneMove() {
         game.processGuess(correctGuess);
 
         assertAll(
-                () -> assertEquals(game.movesCompleted(), game.movesCompleted()),
+                () -> assertEquals(game.movesCompleted(), 1),
                 () -> assertTrue(game.isGameWon())
         );
     }
 
-    @DisplayName("Game can be played with wrong and correct guesses. Game is not over after an incorrect guess, but is over after a correct guess.")
+    @DisplayName("Game can be played with wrong and correct guesses. Game is not won after an incorrect guess, but is won after a correct guess.")
     @Test
     void gameEndsCorrectly() {
         game.processGuess(incorrectGuess);
@@ -52,7 +52,7 @@ public class GameTests {
     @DisplayName("Player can make 10 incorrect guesses and no more.")
     @Test
     void loseGame() {
-        for (int i = 0; i < MAX_ATTEMPTS; i++) {
+        for (int i = 0; i < game.maxAttempts(); i++) {
             game.processGuess(incorrectGuess);
         }
 

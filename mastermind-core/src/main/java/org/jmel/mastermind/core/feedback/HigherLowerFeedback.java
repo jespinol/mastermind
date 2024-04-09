@@ -2,6 +2,9 @@ package org.jmel.mastermind.core.feedback;
 
 import java.util.List;
 
+/**
+ * An implementation of the Feedback interface that provides higher, lower, or equal information for each position in the guess.
+ */
 public record HigherLowerFeedback(List<Integer> scores) implements Feedback {
     public HigherLowerFeedback(List<Integer> scores) {
         this.scores = List.copyOf(scores);

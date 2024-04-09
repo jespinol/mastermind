@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.jmel.mastermind.core.secret_code_suppliers.CodeGenerationPreference.LOCAL_RANDOM;
+import static org.jmel.mastermind.core.secret_code_suppliers.CodeSupplierPreference.LOCAL_RANDOM;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -25,7 +25,7 @@ public class CodeTests {
         static {
             try {
                 game = new Game.Builder()
-                        .codeGenerationPreference(LOCAL_RANDOM)
+                        .codeSupplierPreference(LOCAL_RANDOM)
                         .build();
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -34,7 +34,7 @@ public class CodeTests {
 
         @DisplayName("A too-short guess throws an exception.")
         @Test
-        void codeWithShortGuess() {
+        void guessWithTooShortCodeFails() {
             List<Integer> shortGuess = Collections.nCopies(3, 1);
 
             assertThrows(IllegalArgumentException.class, () -> game.processGuess(shortGuess));
@@ -42,7 +42,7 @@ public class CodeTests {
 
         @DisplayName("A too-long guess throws an exception.")
         @Test
-        void codeWithLongGuess() {
+        void guessWithTooLongCodeFails() {
             List<Integer> longGuess = Collections.nCopies(5, 1);
 
             assertThrows(IllegalArgumentException.class, () -> game.processGuess(longGuess));
@@ -50,14 +50,14 @@ public class CodeTests {
 
         @DisplayName("A null guess throws an exception.")
         @Test
-        void codeWithNullGuess() {
+        void guessWithNullCodeFails() {
 
             assertThrows(IllegalArgumentException.class, () -> game.processGuess(null));
         }
 
         @DisplayName("An empty guess throws an exception.")
         @Test
-        void codeWithEmptyGuess() {
+        void guessWithEmptyCodeFails() {
 
             assertThrows(IllegalArgumentException.class, () -> game.processGuess(Collections.emptyList()));
         }
