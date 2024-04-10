@@ -24,6 +24,7 @@ public class Game {
     private final int maxAttempts;
     private final Code secretCode;
     private final List<Code> guessHistory = new ArrayList<>();
+    private final List<Feedback> feedbackHistory = new ArrayList<>();
     private final FeedbackStrategy feedbackStrategy;
 
     /**
@@ -63,8 +64,10 @@ public class Game {
         Code guess = Code.from(guessInput, this.codeLength, this.numColors);
         guessHistory.add(guess);
 
+        Feedback feedback = feedbackStrategy.get(secretCode, guess);
+        feedbackHistory.add(feedback);
 
-        return feedbackStrategy.get(secretCode, guess);
+        return feedback;
     }
 
     /**
@@ -123,6 +126,29 @@ public class Game {
      */
     public int maxAttempts() {
         return this.maxAttempts;
+    }
+
+    /**
+     * Returns the history of guesses.
+     * <p>
+     * This can be used to display all the valid guesses made in a game.
+     *
+     * @return an immutable list of Code objects representing the history of guesses prior to this method being called
+     */
+    public List<Code> guessHistory() {
+        return List.copyOf(guessHistory);
+    }
+
+    /**
+     * Returns the history of feedback.
+     * <p>
+     * This can be used to display all the feedback given for valid guesses in a game.
+     *
+     * @return an immutable list of Feedback objects representing the history of feedbacks given prior to this method
+     * being called
+     */
+    public List<Feedback> feedbackHistory() {
+        return List.copyOf(feedbackHistory);
     }
 
     /**
@@ -238,24 +264,6 @@ public class Game {
             this.feedbackStrategy = strategy;
 
             return this;
-        }
-
-        /**
-         * Returns the current length of the secret code in the builder.
-         *
-         * @return the length of the secret code
-         */
-        public int codeLength() {
-            return codeLength;
-        }
-
-        /**
-         * Returns the current number of colors in the builder.
-         *
-         * @return the number of colors
-         */
-        public int numColors() {
-            return numColors;
         }
 
         /**

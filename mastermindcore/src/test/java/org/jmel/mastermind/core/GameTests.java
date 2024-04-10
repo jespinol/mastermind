@@ -1,5 +1,6 @@
 package org.jmel.mastermind.core;
 
+import org.jmel.mastermind.core.feedbackstrategy.Feedback;
 import org.jmel.mastermind.core.secretcodesupplier.CodeSupplier;
 import org.jmel.mastermind.core.secretcodesupplier.UserDefinedCodeSupplier;
 import org.junit.jupiter.api.BeforeEach;
@@ -72,5 +73,42 @@ public class GameTests {
                 () -> assertThrows(IllegalStateException.class, () -> game.processGuess(correctGuess)),
                 () -> assertEquals(game.movesCompleted(), 1),
                 () -> assertTrue(game.isGameWon()));
+    }
+
+    @Test
+    void guessHistoryGrows() {
+        List<Code> h0 = game.guessHistory();
+        game.processGuess(incorrectGuess);
+        List<Code> h1 = game.guessHistory();
+        game.processGuess(incorrectGuess);
+        List<Code> h2 = game.guessHistory();
+        game.processGuess(correctGuess);
+        List<Code> h3 = game.guessHistory();
+
+        assertAll(
+                () -> assertEquals(h0.size(), 0),
+                () -> assertEquals(h1.size(), 1),
+                () -> assertEquals(h2.size(), 2),
+                () -> assertEquals(h3.size(), 3)
+        );
+
+    }
+
+    @Test
+    void feedbackHistoryGrows() {
+        List<Feedback> f0 = game.feedbackHistory();
+        game.processGuess(incorrectGuess);
+        List<Feedback> f1 = game.feedbackHistory();
+        game.processGuess(incorrectGuess);
+        List<Feedback> f2 = game.feedbackHistory();
+        game.processGuess(correctGuess);
+        List<Feedback> f3 = game.feedbackHistory();
+
+        assertAll(
+                () -> assertEquals(f0.size(), 0),
+                () -> assertEquals(f1.size(), 1),
+                () -> assertEquals(f2.size(), 2),
+                () -> assertEquals(f3.size(), 3)
+        );
     }
 }
