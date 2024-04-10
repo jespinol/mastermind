@@ -47,7 +47,7 @@ public class ApiCodeSupplier implements CodeSupplier {
             HttpClient httpClient = buildHttpClient();
             if (checkQuota(httpClient)) {
 
-                return List.copyOf(getCodeFromApi(httpClient));
+                return getCodeFromApi(httpClient);
             } else {
                 throw new IOException("Random.org quota exceeded");
             }

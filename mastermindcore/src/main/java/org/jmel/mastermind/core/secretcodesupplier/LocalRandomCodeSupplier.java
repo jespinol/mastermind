@@ -38,6 +38,6 @@ public class LocalRandomCodeSupplier implements CodeSupplier {
             codeValue.add(random.nextInt(0, numColors));
         }
 
-        return List.copyOf(codeValue);
+        return codeValue;
     }
 }

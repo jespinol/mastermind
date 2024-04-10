@@ -49,8 +49,9 @@ public class Game {
      * @param guessInput list of integers representing a guess that conforms to the game's code length and number of
      *                   colors
      * @return Feedback object representing the result of the guess against the secret code based on a feedback strategy
-     * @throws IllegalStateException if the game is already over
-     * @throws IllegalArgumentException if {@param guessInput} does not conform to the game's code length and number of colors
+     * @throws IllegalStateException    if the game is already over
+     * @throws IllegalArgumentException if {@param guessInput} does not conform to the game's code length and number of
+     *                                  colors
      */
     public Feedback processGuess(List<Integer> guessInput) {
         if (isGameWon())
@@ -139,6 +140,15 @@ public class Game {
         private Code secretCode;
 
         /**
+         * Returns the current length of the secret code in the builder.
+         *
+         * @return the length of the secret code
+         */
+        public int codeLength() {
+            return codeLength;
+        }
+
+        /**
          * Sets the length of codes to be used in a game instance.
          * <p>
          * The length of the secret code must be greater than 0.
@@ -152,6 +162,15 @@ public class Game {
             this.codeLength = codeLength;
 
             return this;
+        }
+
+        /**
+         * Returns the current number of colors in the builder.
+         *
+         * @return the number of colors
+         */
+        public int numColors() {
+            return numColors;
         }
 
         /**
@@ -194,10 +213,9 @@ public class Game {
          *
          * @param supplier a CodeSupplier object that supplies a secret code
          * @return the current builder object
-         * @throws IllegalArgumentException if the code supplier is invalid
-         * @throws IOException              if the code supplier fails to supply a code
+         * @throws IllegalArgumentException if the code supplier is null
          */
-        public Builder codeSupplier(CodeSupplier supplier) throws IOException {
+        public Builder codeSupplier(CodeSupplier supplier) {
             if (Objects.isNull(supplier)) throw new IllegalArgumentException("Invalid secret code supplier");
             this.codeSupplier = supplier;
 
@@ -212,7 +230,7 @@ public class Game {
          *
          * @param strategy a FeedbackStrategy object that determines the feedback for a guess
          * @return the current builder object
-         * @throws IllegalArgumentException if the feedback strategy is invalid
+         * @throws IllegalArgumentException if the feedback strategy is null
          */
 
         public Builder feedbackStrategy(FeedbackStrategy strategy) {
@@ -244,9 +262,7 @@ public class Game {
          * Builds a Game object with the specified configuration.
          *
          * @return a Game object with the specified configuration
-         * @throws IllegalArgumentException if the client specified an invalid game parameter or combination of
-         *                                  parameters, if the code supplier or feedback strategies are unimplemented,
-         *                                  or if the code supplier fails to supply a code
+         * @throws IllegalArgumentException if the code supplier supplies a code which conflicts with {@code codeLength} or {@code numColors}
          * @throws IOException              if the code supplier fails to supply a code
          */
         public Game build() throws IOException {

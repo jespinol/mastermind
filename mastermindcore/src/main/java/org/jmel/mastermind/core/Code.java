@@ -41,10 +41,10 @@ public class Code {
     /**
      * Returns the value of the code.
      *
-     * @return an unmodifiable list of integers representing the code
+     * @return an immutable list of integers representing the code
      */
     public List<Integer> value() {
-        return List.copyOf(value);
+        return value;
     }
 
     /**
