@@ -27,10 +27,11 @@ public class Code {
      * @throws IllegalArgumentException if the code is null, has an invalid length, or contains invalid colors
      */
     public static Code from(List<Integer> possibleCode, int codeLength, int numColors) {
-        if (Objects.isNull(possibleCode)) throw new IllegalArgumentException("Null secret code");
-        if (possibleCode.size() != codeLength) throw new IllegalArgumentException("Invalid secret code length");
+        if (Objects.isNull(possibleCode)) throw new IllegalArgumentException("Invalid code! Cannot be null");
+        if (possibleCode.size() != codeLength)
+            throw new IllegalArgumentException("Invalid code length! Code must be %d elements long".formatted(codeLength));
         if (possibleCode.stream().anyMatch(i -> i < 0 || i >= numColors))
-            throw new IllegalArgumentException("Invalid secret code colors");
+            throw new IllegalArgumentException("Invalid code colors! Colors must be in the range 0 to %d (exclusive)".formatted(numColors));
 
         return new Code(possibleCode);
     }

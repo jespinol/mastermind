@@ -1,16 +1,19 @@
 package org.jmel.mastermind.core;
 
-import org.junit.jupiter.api.*;
+import org.jmel.mastermind.core.secretcodesupplier.CodeSupplier;
+import org.jmel.mastermind.core.secretcodesupplier.UserDefinedCodeSupplier;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
-import static org.jmel.mastermind.core.secretcodesupplier.CodeSupplierPreference.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class GameBuilderTests {
+    private static final CodeSupplier userDefinedSupplier = UserDefinedCodeSupplier.of(List.of(1, 2, 3, 4));
 
     @Nested
     public class CorrectBuilderParamTests {
@@ -39,32 +42,10 @@ public class GameBuilderTests {
         }
 
         @Test
-        void canBuildAGameWithSecretCodeOnly() {
+        void canBuildAGameWithSecretCodeOnly() throws IOException {
             gameBuilder
-                    .secretCode(List.of(1, 1, 1, 1));
+                    .codeSupplier(userDefinedSupplier);
         }
-
-        @Test
-        void canBuildAGameWithLongerSecretCodeOnly() {
-            gameBuilder
-                    .secretCode(Collections.nCopies(5, 1));
-        }
-
-        @Test
-        void canOverrideCodeLength() {
-            gameBuilder
-                    .codeLength(5)
-                    .secretCode(List.of(1, 1, 1, 1));
-        }
-
-        @Test
-        void canOverrideCodeSupplierByProvidingCode() {
-            gameBuilder
-                    .codeSupplierPreference(LOCAL_RANDOM)
-                    .secretCode(List.of(1, 1, 1, 1));
-            assertEquals(USER_DEFINED, gameBuilder.codeSupplierPreference());
-        }
-
     }
 
     @Nested
@@ -77,24 +58,9 @@ public class GameBuilderTests {
         }
 
         @Test
-        void buildGameWithUserDefinedStrategyButNoSecretCode() {
-            assertThrows(IllegalArgumentException.class, () -> gameBuilder
-                    .codeSupplierPreference(USER_DEFINED)
-                    .build());
-        }
-
-        @Test
-        void buildGameWithRandomStrategyAndSecretCode() {
-            assertThrows(IllegalArgumentException.class, () -> gameBuilder
-                    .secretCode(List.of(1, 1, 1, 1))
-                    .codeSupplierPreference(RANDOM_ORG_API)
-                    .build());
-        }
-
-        @Test
         void buildGameWithInvalidNumColors() {
             assertThrows(IllegalArgumentException.class, () -> gameBuilder
-                    .numColors(0)
+                    .numColors(1)
                     .build());
         }
 
@@ -113,48 +79,44 @@ public class GameBuilderTests {
         }
 
         @Test
-        void buildGameWithNullStrategy() {
+        void buildGameWithNullCodeSupplier() {
             assertThrows(IllegalArgumentException.class, () -> gameBuilder
-                    .codeSupplierPreference(null)
+                    .codeSupplier(null)
                     .build());
         }
 
         @Test
         void buildGameWithTooHighColorInCode() {
+            CodeSupplier supplier = UserDefinedCodeSupplier.of(List.of(2, 2, 2, 2));
             assertThrows(IllegalArgumentException.class, () -> gameBuilder
-                    .secretCode(List.of(1))
-                    .numColors(1)
+                    .codeSupplier(supplier)
+                    .numColors(2)
                     .build());
         }
 
         @Test
-        @Disabled
-        void buildGameWithOneColor() throws IOException {
-            gameBuilder
-                    .numColors(1)
-                    .build(); // TODO: This throws an exception because Random.org API is used and the user specified only one color. Could check in builder
-        }
-
-        @Test
         void buildGameWithTooLowColorInCode() {
+            CodeSupplier supplier = UserDefinedCodeSupplier.of(List.of(-1, -1, -1, -1));
             assertThrows(IllegalArgumentException.class, () -> gameBuilder
-                    .secretCode(List.of(-1))
-                    .numColors(1)
+                    .codeSupplier(supplier)
+                    .numColors(2)
                     .build());
         }
 
         @Test
         void buildGameWithTooShortCode() {
+            CodeSupplier supplier = UserDefinedCodeSupplier.of(List.of(1));
             assertThrows(IllegalArgumentException.class, () -> gameBuilder
-                    .secretCode(List.of(0))
+                    .codeSupplier(supplier)
                     .codeLength(2)
                     .build());
         }
 
         @Test
         void buildGameWithTooLongCode() {
+            CodeSupplier supplier = UserDefinedCodeSupplier.of(List.of(1, 2, 3, 4, 5));
             assertThrows(IllegalArgumentException.class, () -> gameBuilder
-                    .secretCode(List.of(1, 2, 3, 4, 5))
+                    .codeSupplier(supplier)
                     .codeLength(4)
                     .build());
         }

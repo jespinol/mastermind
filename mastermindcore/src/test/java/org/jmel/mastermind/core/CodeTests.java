@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.jmel.mastermind.core.secretcodesupplier.CodeSupplierPreference.LOCAL_RANDOM;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -25,7 +24,7 @@ public class CodeTests {
         static {
             try {
                 game = new Game.Builder()
-                        .codeSupplierPreference(LOCAL_RANDOM)
+                        .codeSupplier(LocalRandomCodeSupplier.of(4, 8))
                         .build();
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -97,16 +96,16 @@ public class CodeTests {
         @Test
         void getCodeFromUserDefined() throws IOException {
             List<Integer> codeValue = List.of(1, 2, 3, 4);
-            Code secretCode = Code.from(codeValue, 4, 8);
-            CodeSupplier userDefinedCodeSupplier = new UserDefinedCodeSupplier(secretCode);
+//            Code secretCode = Code.from(codeValue, 4, 8);
+            CodeSupplier userDefinedCodeSupplier = UserDefinedCodeSupplier.of(codeValue);
 
-            userDefinedCodeSupplier.get();
+            Code.from(userDefinedCodeSupplier.get(), 4, 8);
         }
 
         @DisplayName("Locally random code supplier successfully returns a Code object.")
         @Test
         void getCodeFromLocalRandom() throws IOException {
-            CodeSupplier localRandomCodeSupplier = new LocalRandomCodeSupplier(4, 8);
+            CodeSupplier localRandomCodeSupplier = LocalRandomCodeSupplier.of(4, 8);
 
             localRandomCodeSupplier.get();
         }
@@ -114,7 +113,7 @@ public class CodeTests {
         @DisplayName("API code supplier successfully generates a Code object.")
         @Test
         void getCodeFromApi() throws IOException { // TODO: test with a mock response instead of actually sending to random.org
-            CodeSupplier apiCodeSupplier = new ApiCodeSupplier(4, 8);
+            CodeSupplier apiCodeSupplier = ApiCodeSupplier.of(4, 8);
 
             apiCodeSupplier.get();
         }

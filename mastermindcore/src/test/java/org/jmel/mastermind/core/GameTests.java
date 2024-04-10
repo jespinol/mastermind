@@ -1,5 +1,7 @@
 package org.jmel.mastermind.core;
 
+import org.jmel.mastermind.core.secretcodesupplier.CodeSupplier;
+import org.jmel.mastermind.core.secretcodesupplier.UserDefinedCodeSupplier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +17,7 @@ public class GameTests {
     private final static int MAX_ATTEMPTS = 10;
     private final static List<Integer> correctGuess = List.of(1, 2, 3, 4);
     private final static List<Integer> incorrectGuess = List.of(1, 2, 3, 5);
-
+    private final static CodeSupplier userDefinedCodeSupplier = UserDefinedCodeSupplier.of(correctGuess);
     private Game game;
 
     @BeforeEach
@@ -23,7 +25,7 @@ public class GameTests {
         game = new Game.Builder()
                 .numColors(NUM_COLORS)
                 .codeLength(CODE_LENGTH)
-                .secretCode(correctGuess)
+                .codeSupplier(userDefinedCodeSupplier)
                 .maxAttempts(MAX_ATTEMPTS)
                 .build();
     }

@@ -1,7 +1,5 @@
 package org.jmel.mastermind.core.secretcodesupplier;
 
-import org.jmel.mastermind.core.Code;
-
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -22,9 +20,13 @@ public class ApiCodeSupplier implements CodeSupplier {
     private final int codeLength;
     private final int numColors;
 
-    public ApiCodeSupplier(int codeLength, int numColors) {
+    private ApiCodeSupplier(int codeLength, int numColors) {
         this.codeLength = codeLength;
         this.numColors = numColors;
+    }
+
+    public static ApiCodeSupplier of(int codeLength, int numColors) {
+        return new ApiCodeSupplier(codeLength, numColors);
     }
 
     /**
@@ -34,13 +36,12 @@ public class ApiCodeSupplier implements CodeSupplier {
      * @throws IOException if the API request fails or the quota is exceeded
      */
     @Override
-    public Code get() throws IOException {
+    public List<Integer> get() throws IOException {
         try {
             HttpClient httpClient = buildHttpClient();
             if (checkQuota(httpClient)) {
-                List<Integer> codeValue = getCodeFromApi(httpClient);
 
-                return Code.from(codeValue, codeLength, numColors);
+                return List.copyOf(getCodeFromApi(httpClient));
             } else {
                 throw new IOException("Random.org quota exceeded");
             }

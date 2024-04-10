@@ -1,19 +1,23 @@
 package org.jmel.mastermind.core.secretcodesupplier;
 
-import org.jmel.mastermind.core.Code;
+import java.util.List;
 
 /**
  * A code supplier that uses predefined code as a secret code.
  */
 public class UserDefinedCodeSupplier implements CodeSupplier {
-    private final Code secretCode;
+    private final List<Integer> secretCode;
 
-    public UserDefinedCodeSupplier(Code secretCode) {
-        this.secretCode = secretCode;
+    private UserDefinedCodeSupplier(List<Integer> secretCode) {
+        this.secretCode = List.copyOf(secretCode);
+    }
+
+    public static UserDefinedCodeSupplier of(List<Integer> secretCode) {
+        return new UserDefinedCodeSupplier(secretCode);
     }
 
     @Override
-    public Code get() {
+    public List<Integer> get() {
         return secretCode;
     }
 }
