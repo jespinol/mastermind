@@ -1,7 +1,10 @@
 package org.jmel.mastermind.core.feedbackstrategy;
 
 /**
- * An implementation of the Feedback interface based on the feedback found in many versions of the Mastermind game.
+ * An implementation of the Feedback interface based on the feedback found in the original Mastermind game.
+ * <p></p>
+ * Reports the number of correctly placed, and correct but misplaced elements. For example, secret code [1,2,3,4] and
+ * guess [1,4,3,5] will yield "2 correctly placed, 1 misplaced"
  *
  * @param wellPlaced the number of correctly placed numbers in the guess
  * @param misplaced  the number of misplaced numbers in the guess
@@ -9,10 +12,6 @@ package org.jmel.mastermind.core.feedbackstrategy;
 public record OriginalMastermindFeedback(int wellPlaced, int misplaced) implements Feedback {
     /**
      * {@inheritDoc}
-     * <p>
-     * Reports the number of correctly placed and misplaced numbers. Correctly placed refers to numbers that are in the
-     * secret code and are in the correct position. Misplaced refers to numbers that are in the secret code but only to
-     * those that are not in the correct position.
      */
     @Override
     public String toString() {

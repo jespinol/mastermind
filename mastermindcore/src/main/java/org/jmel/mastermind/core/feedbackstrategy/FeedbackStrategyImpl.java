@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * An enumeration of implemented feedback strategies to provide feedback for a guess.
- * <p>
- * Available strategies are:
+ * Several algorithms implementing the {@link org.jmel.mastermind.core.feedbackstrategy.FeedbackStrategy} interface.
+ * <p></p>
+ * * Available strategies include:
  * <ul>
  *     <li>{@link #DEFAULT}</li>
  *     <li>{@link #ORIGINAL_MASTERMIND}</li>

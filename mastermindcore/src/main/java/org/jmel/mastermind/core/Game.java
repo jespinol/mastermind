@@ -13,7 +13,7 @@ import java.util.Objects;
 
 /**
  * Represents a Mastermind game.
- * <p>
+ * <p></p>
  * A game is played by making guesses against a secret code. The game is over when a guess matches the secret code or if
  * the maximum number of attempts is reached. A game can be configured with a custom code length, number of colors,
  * maximum number of attempts, secret code supplier, and feedback strategy.
@@ -42,7 +42,7 @@ public class Game {
 
     /**
      * Processes a guess against the secret code.
-     * <p>
+     * <p></p>
      * A guess to be processed is considered invalid if the game is won, the maximum number of attempts was reached, or
      * a Code object could not be instantiated. If a guess is valid, it will be added to the guess history, and the
      * corresponding feedback will be added to the feedback history.
@@ -72,7 +72,7 @@ public class Game {
 
     /**
      * Returns the number of moves completed in the game.
-     * <p>
+     * <p></p>
      * A move is considered completed if the input guess is valid and is added to the guess history.
      *
      * @return an integer representing the number of moves completed in the game
@@ -86,7 +86,7 @@ public class Game {
 
     /**
      * Returns true if the game is won.
-     * <p>
+     * <p></p>
      * A game is won if the last guess in the guess history is equal to the secret code.
      *
      * @return a boolean representing whether the game is won
@@ -97,7 +97,7 @@ public class Game {
 
     /**
      * Returns the length of the secret code.
-     * <p>
+     * <p></p>
      * This can be used can be used for client-side validation of guess inputs
      *
      * @return an integer representing the length of the secret code
@@ -108,7 +108,7 @@ public class Game {
 
     /**
      * Returns the number of colors that can form the secret code.
-     * <p>
+     * <p></p>
      * This can be used can be used for client-side validation of guess inputs
      *
      * @return an integer representing the number of colors that can form the secret code
@@ -119,7 +119,7 @@ public class Game {
 
     /**
      * Returns the number of attempts allowed in the game.
-     * <p>
+     * <p></p>
      * This can be used to determine if a new guess can be processed.
      *
      * @return an integer representing the maximum number of attempts allowed in the game
@@ -130,7 +130,7 @@ public class Game {
 
     /**
      * Returns the history of guesses.
-     * <p>
+     * <p></p>
      * This can be used to display all the valid guesses made in a game.
      *
      * @return an immutable list of Code objects representing the history of guesses prior to this method being called
@@ -141,7 +141,7 @@ public class Game {
 
     /**
      * Returns the history of feedback.
-     * <p>
+     * <p></p>
      * This can be used to display all the feedback given for valid guesses in a game.
      *
      * @return an immutable list of Feedback objects representing the history of feedbacks given prior to this method
@@ -153,7 +153,7 @@ public class Game {
 
     /**
      * Builder for a Game object.
-     * <p>
+     * <p></p>
      * Different game parameters are set to default values corresponding to a standard Mastermind game. Custom values
      * can be set using the builder's methods and will throw exceptions if invalid values are provided.
      */
@@ -176,7 +176,7 @@ public class Game {
 
         /**
          * Sets the length of codes to be used in a game instance.
-         * <p>
+         * <p></p>
          * The length of the secret code must be greater than 0.
          *
          * @param codeLength an integer representing the length of a code
@@ -201,7 +201,7 @@ public class Game {
 
         /**
          * Sets the number of colors that can be used in the secret code.
-         * <p>
+         * <p></p>
          * The number of colors must be greater than 1.
          *
          * @param numColors an integer representing the number of colors that can be used in a code
@@ -217,7 +217,7 @@ public class Game {
 
         /**
          * Sets the maximum number of attempts allowed in a game instance.
-         * <p>
+         * <p></p>
          * The maximum number of attempts must be greater than 0.
          *
          * @param maxAttempts an integer representing the maximum number of attempts allowed in a game
@@ -233,7 +233,7 @@ public class Game {
 
         /**
          * Sets the secret code supplier for a game instance.
-         * <p>
+         * <p></p>
          * If the code supplier is not set, a default code supplier will be used. See
          * {@link org.jmel.mastermind.core.secretcodesupplier.CodeSupplier}
          *
@@ -250,7 +250,7 @@ public class Game {
 
         /**
          * Sets the feedback strategy for a game instance.
-         * <p>
+         * <p></p>
          * If the feedback strategy is not set, a default feedback strategy will be used. See
          * {@link org.jmel.mastermind.core.feedbackstrategy.FeedbackStrategyImpl}
          *

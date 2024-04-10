@@ -3,33 +3,38 @@ package org.jmel.mastermind.core.feedbackstrategy;
 import java.util.List;
 
 /**
- * An implementation of the Feedback interface that provides higher, lower, or equal information for each position in
- * the guess. For example, with codes of length 1, the feedback '+' means that the guess was too high
+ * An implementation of the Feedback interface that provides a {@code List<Integer>} of ones, zeros, and negative ones,
+ * where:
+ * <ul>
+ *     <li>1 means that the guess element was higher than,</li>
+ *     <li>0 means that the guess element was equal to, and</li>
+ *     <li>-1 means that the guess element was lower than,</li>
+ * </ul>
+ * the corresponding secret code element.
+ * <p></p>
+ * For example, with codes of length 1, the feedback {@code -1} means that the guess was too high
  *
- * @param scores a list of integers representing where each element represents a feedback for that position in the guess
+ * @param values a list of integers where each element represents the feedback for a position in the guess
  */
-public record HigherLowerFeedback(List<Integer> scores) implements Feedback {
+public record HigherLowerFeedback(List<Integer> values) implements Feedback {
     /**
-     * Constructs a new HigherLowerFeedback object with the given scores by creating an immutable list of the scores.
+     * Constructs a new HigherLowerFeedback object with the given values by creating an immutable list of the values.
      */
-    public HigherLowerFeedback(List<Integer> scores) {
-        this.scores = List.copyOf(scores);
+    public HigherLowerFeedback(List<Integer> values) {
+        this.values = List.copyOf(values);
     }
 
     /**
      * {@inheritDoc}
-     * <p>
-     * Reports whether each number in the guess is higher, lower, or equal to the corresponding number in the secret
-     * code.
      */
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
         result.append("> ");
-        for (int score : scores) {
-            if (score > 0) {
+        for (int value : values) {
+            if (value > 0) {
                 result.append("+ ");
-            } else if (score < 0) {
+            } else if (value < 0) {
                 result.append("- ");
             } else {
                 result.append("= ");

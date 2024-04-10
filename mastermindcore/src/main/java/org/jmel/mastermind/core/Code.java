@@ -5,12 +5,12 @@ import java.util.Objects;
 
 /**
  * Represents a Mastermind code which could be a secret code or a guess.
- * <p>
+ * <p></p>
  * The value of a code is represented by a list of integers that has a certain length. Each integer represents one of
- * several allowed colors in the range of 0 to numColors - 1. While Mastermind Core only represents the
- * components of a code as Integers, these can be easily mapped to any desired symbol client side (for example, 0 can be
- * mapped to 'A' or '*' or any other symbol).These constraints are specified in Game.Builder and will match the
- * constraints of the secret code.
+ * several allowed colors in the range of 0 to numColors - 1. While Mastermind Core only represents the components of a
+ * code as Integers, these can be easily mapped to any desired symbol client side (for example, 0 can be mapped to 'A'
+ * or '*' or any other symbol).These constraints are specified in Game.Builder and will match the constraints of the
+ * secret code.
  */
 public class Code {
     private final List<Integer> value;
@@ -49,7 +49,7 @@ public class Code {
 
     /**
      * Returns true if the underlying {@code List<Integer>}s are equal.
-     * <p>
+     * <p></p>
      * Two codes are equal if they are the same instance. If not, two codes can be equal if they have the same value.
      *
      * @param o the object to compare

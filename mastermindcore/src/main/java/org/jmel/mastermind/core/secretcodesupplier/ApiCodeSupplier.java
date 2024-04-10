@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * A code supplier that uses the random.org API to generate a random code of a given length where each code element is
+ * A code supplier implementation that uses the random.org API to generate a random code of a given length where each code element is
  * one of the allowed colors. It uses the free tier API which allows up to 1,000,000 bits per day per IP address.
  */
 public class ApiCodeSupplier implements CodeSupplier {

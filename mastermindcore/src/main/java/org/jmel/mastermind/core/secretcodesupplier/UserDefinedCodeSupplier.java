@@ -3,7 +3,7 @@ package org.jmel.mastermind.core.secretcodesupplier;
 import java.util.List;
 
 /**
- * A code supplier that uses predefined code as a secret code.
+ * A code supplier that simply returns a predefined code.
  */
 public class UserDefinedCodeSupplier implements CodeSupplier {
     private final List<Integer> secretCode;

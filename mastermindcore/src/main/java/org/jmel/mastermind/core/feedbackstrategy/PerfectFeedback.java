@@ -3,15 +3,14 @@ package org.jmel.mastermind.core.feedbackstrategy;
 /**
  * An implementation of the Feedback interface. It is a variation of the OriginalMastermindFeedback, but only the number
  * of well-placed pegs is reported.
+ * <p></p>
+ * For example, secret code [1,2,3,4] and guess [1,4,3,5] will yield "2 correctly placed"
  *
  * @param wellPlaced the number of correctly placed numbers in the guess
  */
 public record PerfectFeedback(int wellPlaced) implements Feedback {
     /**
      * {@inheritDoc}
-     * <p>
-     * Reports the number of correctly placed numbers. Correctly placed refers to numbers that are in the secret code
-     * and are in the correct position.
      */
     @Override
     public String toString() {

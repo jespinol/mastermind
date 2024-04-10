@@ -2,8 +2,8 @@ package org.jmel.mastermind.core.secretcodesupplier;
 
 /**
  * Represents the preference for a secret code supplier.
- * <p>
- * Available preferences are:
+ * <p></p>
+ * * Available preferences are:
  * <ul>
  *     <li>{@link #RANDOM_ORG_API}</li>
  *     <li>{@link #LOCAL_RANDOM}</li>

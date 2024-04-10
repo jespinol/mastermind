@@ -5,7 +5,6 @@ package org.jmel.mastermind.core.feedbackstrategy;
  */
 public interface Feedback {
     /**
-     * Returns a string representation of a feedback.
      *
      * @return a string representing the feedback after making a valid guess
      */
