@@ -14,7 +14,7 @@ import java.util.Objects;
 /**
  * Represents a Mastermind game.
  * <p>
- * A game is played by making guesses against a secret code. The game is won when a guess matches the secret code or if
+ * A game is played by making guesses against a secret code. The game is over when a guess matches the secret code or if
  * the maximum number of attempts is reached. A game can be configured with a custom code length, number of colors,
  * maximum number of attempts, secret code supplier, and feedback strategy.
  */
@@ -43,12 +43,14 @@ public class Game {
      * Processes a guess against the secret code.
      * <p>
      * A guess to be processed is considered invalid if the game is won, the maximum number of attempts was reached, or
-     * a Code object could not be instantiated. If a guess is valid, it will be added to the guess history.
+     * a Code object could not be instantiated. If a guess is valid, it will be added to the guess history, and the
+     * corresponding feedback will be added to the feedback history.
      *
      * @param guessInput list of integers representing a guess that conforms to the game's code length and number of
      *                   colors
      * @return Feedback object representing the result of the guess against the secret code based on a feedback strategy
      * @throws IllegalStateException if the game is already over
+     * @throws IllegalArgumentException if {@param guessInput} does not conform to the game's code length and number of colors
      */
     public Feedback processGuess(List<Integer> guessInput) {
         if (isGameWon())
@@ -92,7 +94,7 @@ public class Game {
     /**
      * Returns the length of the secret code.
      * <p>
-     * This can be used to validate the length of a guess input.
+     * This can be used can be used for client-side validation of guess inputs
      *
      * @return an integer representing the length of the secret code
      */
@@ -103,7 +105,7 @@ public class Game {
     /**
      * Returns the number of colors that can form the secret code.
      * <p>
-     * This can be used to validate the composition of a guess input.
+     * This can be used can be used for client-side validation of guess inputs
      *
      * @return an integer representing the number of colors that can form the secret code
      */
@@ -187,13 +189,13 @@ public class Game {
         /**
          * Sets the secret code supplier for a game instance.
          * <p>
-         * If the code supplier is not set, a default code supplier will be used.
-         * See {@link org.jmel.mastermind.core.secretcodesupplier.CodeSupplier}
+         * If the code supplier is not set, a default code supplier will be used. See
+         * {@link org.jmel.mastermind.core.secretcodesupplier.CodeSupplier}
          *
          * @param supplier a CodeSupplier object that supplies a secret code
          * @return the current builder object
          * @throws IllegalArgumentException if the code supplier is invalid
-         * @throws IOException if the code supplier fails to supply a code
+         * @throws IOException              if the code supplier fails to supply a code
          */
         public Builder codeSupplier(CodeSupplier supplier) throws IOException {
             if (Objects.isNull(supplier)) throw new IllegalArgumentException("Invalid secret code supplier");
@@ -205,8 +207,8 @@ public class Game {
         /**
          * Sets the feedback strategy for a game instance.
          * <p>
-         * If the feedback strategy is not set, a default feedback strategy will be used.
-         * See {@link org.jmel.mastermind.core.feedbackstrategy.FeedbackStrategyImpl}
+         * If the feedback strategy is not set, a default feedback strategy will be used. See
+         * {@link org.jmel.mastermind.core.feedbackstrategy.FeedbackStrategyImpl}
          *
          * @param strategy a FeedbackStrategy object that determines the feedback for a guess
          * @return the current builder object
