@@ -17,11 +17,7 @@ public class CliUtils {
         return getIntegerMatchingCondition(allowedChoices::contains);
     }
 
-    public static int getIntegerValue() {
-        return getIntegerMatchingCondition(i -> i > 0);
-    }
-
-    private static int getIntegerMatchingCondition(Predicate<Integer> p) {
+    public static int getIntegerMatchingCondition(Predicate<Integer> p) {
         while (true) {
             System.out.print("> ");
             String trimmedLine = scanner.nextLine().trim();
@@ -39,20 +35,27 @@ public class CliUtils {
         }
     }
 
-    public static List<Integer> getNextCode(int codeLength, int numColors) {
+    public static List<Integer> getCode() {
         do {
             System.out.print("> ");
             String trimmedLine = scanner.nextLine().trim();
             try {
-                List<Integer> possibleCode = Stream.of(trimmedLine.split("\\s+")).map(Integer::parseInt).toList();
-                if (isCodeValid(possibleCode, codeLength, numColors)) {
-                    return possibleCode;
-                } else {
-                    System.out.printf("Invalid code. Please enter %d digits from 0 to %d, space separated%n", codeLength, numColors - 1);
-                }
+                return Stream.of(trimmedLine.split("\\s+")).map(Integer::parseInt).toList();
             } catch (NumberFormatException e) {
                 System.out.println("Invalid code. Please enter a numeric guess.");
             }
+        } while (true);
+    }
+
+    public static List<Integer> getCode(int codeLength, int numColors) {
+        do {
+            List<Integer> possibleCode = getCode();
+            if (isCodeValid(possibleCode, codeLength, numColors)) {
+                return possibleCode;
+            } else {
+                System.out.printf("Invalid code. Please enter %d digits from 0 to %d, space separated%n", codeLength, numColors - 1);
+            }
+
         } while (true);
     }
 
