@@ -63,4 +63,14 @@ public class GameTests {
                 () -> assertEquals(game.movesCompleted(), game.maxAttempts()),
                 () -> assertFalse(game.isGameWon()));
     }
+
+    @Test
+    void playerCannotMakeMoreGuessesAfterWinning() {
+        game.processGuess(correctGuess);
+
+        assertAll(
+                () -> assertThrows(IllegalStateException.class, () -> game.processGuess(correctGuess)),
+                () -> assertEquals(game.movesCompleted(), 1),
+                () -> assertTrue(game.isGameWon()));
+    }
 }
