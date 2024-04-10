@@ -9,10 +9,19 @@ import java.util.Map;
 
 /**
  * An enumeration of implemented feedback strategies to provide feedback for a guess.
+ * <p>
+ * Available strategies are:
+ * <ul>
+ *     <li>{@link #DEFAULT}</li>
+ *     <li>{@link #ORIGINAL_MASTERMIND}</li>
+ *     <li>{@link #HIGHER_LOWER}</li>
+ *     <li>{@link #PERFECT}</li>
+ * </ul>
  */
 public enum FeedbackStrategyImpl implements FeedbackStrategy {
     /**
-     * A feedback strategy that provides the number of perfect matches and color matches.
+     * A feedback strategy that provides the number of perfect matches and total matches regardless of position. See
+     * {@link org.jmel.mastermind.core.feedbackstrategy.DefaultFeedback}.
      */
     DEFAULT {
         @Override
@@ -24,7 +33,8 @@ public enum FeedbackStrategyImpl implements FeedbackStrategy {
         }
     },
     /**
-     * A feedback strategy that provides the number of well-placed and misplaced matches.
+     * A feedback strategy that provides the number of well-placed and misplaced matches. See
+     * {@link org.jmel.mastermind.core.feedbackstrategy.OriginalMastermindFeedback}.
      */
     ORIGINAL_MASTERMIND {
         @Override
@@ -36,7 +46,8 @@ public enum FeedbackStrategyImpl implements FeedbackStrategy {
         }
     },
     /**
-     * A feedback strategy that provides higher, lower, or equal information for each position in the guess.
+     * A feedback strategy that provides higher, lower, or equal information for each position in the guess. See
+     * {@link org.jmel.mastermind.core.feedbackstrategy.HigherLowerFeedback}.
      */
     HIGHER_LOWER {
         @Override
@@ -58,7 +69,8 @@ public enum FeedbackStrategyImpl implements FeedbackStrategy {
         }
     },
     /**
-     * A feedback strategy that provides only the number of perfect matches.
+     * A feedback strategy that provides only the number of perfect matches. See
+     * {@link org.jmel.mastermind.core.feedbackstrategy.PerfectFeedback}.
      */
     PERFECT {
         @Override

@@ -8,9 +8,9 @@ import java.util.List;
  */
 public interface CodeSupplier {
     /**
-     * Gets a code from a supplier implementation.
+     * Returns a code represented by a {@code List<Integers>} from a supplier implementation.
      *
-     * @return a Code object
+     * @return a {@code List<Integers>} representing a code
      * @throws IOException if the code cannot be retrieved in certain implementations
      */
     List<Integer> get() throws IOException;

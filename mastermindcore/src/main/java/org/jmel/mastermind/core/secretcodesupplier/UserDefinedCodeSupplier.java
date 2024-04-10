@@ -12,10 +12,19 @@ public class UserDefinedCodeSupplier implements CodeSupplier {
         this.secretCode = List.copyOf(secretCode);
     }
 
+    /**
+     * Creates a new instance of UserDefinedCodeSupplier with the given secret code.
+     *
+     * @param secretCode the secret code
+     * @return a new instance of UserDefinedCodeSupplier
+     */
     public static UserDefinedCodeSupplier of(List<Integer> secretCode) {
         return new UserDefinedCodeSupplier(secretCode);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Integer> get() {
         return secretCode;

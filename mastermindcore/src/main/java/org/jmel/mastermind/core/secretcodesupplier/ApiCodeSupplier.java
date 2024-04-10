@@ -25,14 +25,20 @@ public class ApiCodeSupplier implements CodeSupplier {
         this.numColors = numColors;
     }
 
+    /**
+     * Creates a new instance of ApiCodeSupplier with the given code length and number of colors.
+     *
+     * @param codeLength the length of the code
+     * @param numColors  the number of colors that can be used in the code
+     * @return a new instance of ApiCodeSupplier
+     */
     public static ApiCodeSupplier of(int codeLength, int numColors) {
         return new ApiCodeSupplier(codeLength, numColors);
     }
 
     /**
-     * Gets a random code from the random.org API.
+     * {@inheritDoc}
      *
-     * @return a Code object
      * @throws IOException if the API request fails or the quota is exceeded
      */
     @Override

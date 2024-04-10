@@ -7,5 +7,12 @@ import org.jmel.mastermind.core.Code;
  * and the guess.
  */
 public interface FeedbackStrategy {
+    /**
+     * Returns a feedback based on the secret code and the guess and a specified strategy.
+     *
+     * @param secretCode the secret code
+     * @param guess      the guess
+     * @return a feedback based on the secret code and the guess
+     */
     Feedback get(Code secretCode, Code guess);
 }
