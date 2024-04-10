@@ -6,6 +6,6 @@ package org.jmel.mastermind.core.feedbackstrategy;
 public record OriginalMastermindFeedback(int wellPlaced, int misplaced) implements Feedback {
     @Override
     public String toString() {
-        return String.format("%d correctly placed, %d misplaced", wellPlaced, misplaced);
+        return "%d correctly placed, %d misplaced".formatted(wellPlaced, misplaced);
     }
 }
