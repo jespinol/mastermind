@@ -33,7 +33,7 @@ public class Code {
         if (possibleCode.size() != codeLength)
             throw new IllegalArgumentException("Invalid code length! Code must be %d elements long".formatted(codeLength));
         if (possibleCode.stream().anyMatch(i -> i < 0 || i >= numColors))
-            throw new IllegalArgumentException("Invalid code colors! Colors must be in the range 0 to %d (exclusive)".formatted(numColors));
+            throw new IllegalArgumentException("Invalid code colors! Colors must be in the range 0 to %d (inclusive)".formatted(numColors - 1));
 
         return new Code(possibleCode);
     }
