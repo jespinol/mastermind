@@ -1,8 +1,7 @@
 package org.jmel.mastermind.core.feedbackstrategy;
 
 /**
- * An implementation of the Feedback interface based on the feedback found in the REACH Mastermind Challenge
- * instructions.
+ * An implementation of the Feedback interface based on the feedback found in the take-home project instructions.
  * <p></p>
  * * For example, secret code [1,2,3,4] and guess [1,4,3,5] will yield "3 correct numbers, 2 correctly placed"
  *

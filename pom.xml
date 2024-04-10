@@ -8,7 +8,7 @@
     <artifactId>mastermind</artifactId>
     <packaging>pom</packaging>
     <version>1.0</version>
-    <name>Mastermind REACH</name>
+    <name>Mastermind</name>
 
     <modules>
         <module>mastermindcore</module>
