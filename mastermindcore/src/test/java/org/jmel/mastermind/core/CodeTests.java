@@ -96,7 +96,7 @@ public class CodeTests {
         @Test
         void getCodeFromUserDefined() throws IOException {
             List<Integer> codeValue = List.of(1, 2, 3, 4);
-//            Code secretCode = Code.from(codeValue, 4, 8);
+
             CodeSupplier userDefinedCodeSupplier = UserDefinedCodeSupplier.of(codeValue);
 
             Code.from(userDefinedCodeSupplier.get(), 4, 8);

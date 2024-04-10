@@ -4,7 +4,6 @@ import org.jmel.mastermind.core.Game;
 import org.jmel.mastermind.core.feedbackstrategy.Feedback;
 import org.jmel.mastermind.core.feedbackstrategy.FeedbackStrategy;
 import org.jmel.mastermind.core.secretcodesupplier.ApiCodeSupplier;
-import org.jmel.mastermind.core.secretcodesupplier.CodeSupplierPreference;
 import org.jmel.mastermind.core.secretcodesupplier.LocalRandomCodeSupplier;
 import org.jmel.mastermind.core.secretcodesupplier.UserDefinedCodeSupplier;
 
@@ -13,7 +12,7 @@ import java.util.List;
 
 import static org.jmel.mastermind.cli.CliUtils.*;
 import static org.jmel.mastermind.cli.Menu.*;
-import static org.jmel.mastermind.core.secretcodesupplier.CodeSupplierPreference.*;
+import static org.jmel.mastermind.cli.CodeSupplierPreference.*;
 
 public class MastermindCliApplication {
     private static Menu currentMenu = MAIN_MENU;
@@ -49,7 +48,7 @@ public class MastermindCliApplication {
         }
     }
 
-    private static Menu getNextMenu() throws IOException {
+    private static Menu getNextMenu() {
         if (navigationalMenu.containsKey(currentMenu)) {
             int choice = getIntegerChoiceFromSet(navigationalMenu.get(currentMenu).keySet());
             return navigationalMenu.get(currentMenu).get(choice);

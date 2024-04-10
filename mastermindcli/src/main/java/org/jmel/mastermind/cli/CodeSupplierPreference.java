@@ -1,4 +1,4 @@
-package org.jmel.mastermind.core.secretcodesupplier;
+package org.jmel.mastermind.cli;
 
 /**
  * Represents the preference for a secret code supplier.

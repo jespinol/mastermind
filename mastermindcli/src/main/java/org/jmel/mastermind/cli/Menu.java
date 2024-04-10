@@ -2,7 +2,6 @@ package org.jmel.mastermind.cli;
 
 import org.jmel.mastermind.core.feedbackstrategy.FeedbackStrategy;
 import org.jmel.mastermind.core.feedbackstrategy.FeedbackStrategyImpl;
-import org.jmel.mastermind.core.secretcodesupplier.CodeSupplierPreference;
 
 import java.util.HashMap;
 import java.util.Map;
