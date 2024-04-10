@@ -57,7 +57,7 @@ Beyond the required minimum viable product, the following features were added:
     - Code supplier: allows the client implementation to choose how the initial secret code is generated, for example: a randomly generated code or a code provided by the end user
     - Feedback strategy: allows the client implementation to choose the type of the feedback received after each guess
 2. **Error handling**: The game rejects invalid inputs and provides error information to the client. Also, the game handles errors that may occur when the CodeSupplier generates a secret code
-3. **Spring boot web implementation**: A web application was created to demonstrate playing the game via HTTP requests. More information [here](https://github.com/jespinol/mastermindweb)
+3. **Spring boot web implementation**: A simple web application was created to demonstrate an implementation of the game that can be played with HTTP requests. It also demonstrates how a client can define its own FeedbackStrategy to create a customized game. [Link to that project here](https://github.com/jespinol/mastermindweb)
 4. **Tests**: Unit tests for the game library
 5. **API documentation**: Docs and [Javadocs](https://jespinol.github.io/mastermindcore_docs/) for the game library
 6. **Ability to use the game library in other projects**: For example, one can run `mvn install` in this project, which installs the library to the local maven reposition Then another project could use the library as a dependency, e.g. a maven project could add the following lines to the project's `pom.xml` file:
