@@ -17,7 +17,8 @@ public enum Menu {
             #############################
             Choose one:
             1. Play
-            2. Settings
+            2. Multiplayer
+            3. Settings
             0. Quit"""), // changes here must be reflected in navigationalMenu
     SETTINGS_MAIN("""
             ************************
@@ -51,7 +52,8 @@ public enum Menu {
     SETTINGS_MAX_ATTEMPTS("Enter max attempts: "),
     SETTINGS_CODE_LENGTH("Enter code length: "),
     SETTINGS_NUM_COLORS("Enter number of colors: "),
-    GAME_SETUP_FAILED("Press 1 to revise settings or 0 to quit");
+    GAME_SETUP_FAILED("Press 1 to revise settings or 0 to quit"),
+    MULTIPLAYER_SETUP("How many players?");
 
     // Every menu must be either a navigational menu or an input collection menu, but not both
     public static final Map<Menu, Map<Integer, Menu>> navigationalMenu = new HashMap<>();
@@ -60,7 +62,7 @@ public enum Menu {
     public static final Map<Integer, FeedbackStrategy> feedbackStrategyMap = new HashMap<>();
 
     static {
-        navigationalMenu.put(MAIN_MENU, Map.of(0, EXIT, 1, PLAY, 2, SETTINGS_MAIN));
+        navigationalMenu.put(MAIN_MENU, Map.of(0, EXIT, 1, PLAY, 2, MULTIPLAYER_SETUP, 3, SETTINGS_MAIN));
         navigationalMenu.put(SETTINGS_MAIN, Map.of(0, MAIN_MENU, 1, SETTINGS_MAX_ATTEMPTS, 2, SETTINGS_CODE_LENGTH, 3, SETTINGS_NUM_COLORS, 4, SETTINGS_CODE_GENERATION_PREFERENCE, 5, SETTINGS_FEEDBACK_PREFERENCE));
         navigationalMenu.put(GAME_SETUP_FAILED, Map.of(0, EXIT, 1, SETTINGS_MAIN));
     }
@@ -72,6 +74,7 @@ public enum Menu {
         inputCollectionMenu.put(SETTINGS_CODE_GENERATION_PREFERENCE, SETTINGS_MAIN);
         inputCollectionMenu.put(SETTINGS_CODE_USER_DEFINED, SETTINGS_MAIN);
         inputCollectionMenu.put(SETTINGS_FEEDBACK_PREFERENCE, SETTINGS_MAIN);
+        inputCollectionMenu.put(MULTIPLAYER_SETUP, PLAY);
     }
 
     static {
